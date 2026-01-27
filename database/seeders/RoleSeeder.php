@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
         Role::firstOrCreate(['name' => 'Admin']);
         Role::firstOrCreate(['name' => 'Manager']);
         Role::firstOrCreate(['name' => 'Tenant']);
+        Role::firstOrCreate(['name' => 'Owner']);
 
         // Example permissions
         Permission::firstOrCreate(['name' => 'manage users']);

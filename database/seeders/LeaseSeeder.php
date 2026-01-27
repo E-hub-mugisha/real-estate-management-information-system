@@ -24,7 +24,7 @@ class LeaseSeeder extends Seeder
             'unit_id' => $unit->id,
             'start_date' => Carbon::now()->subMonths(2),
             'end_date' => Carbon::now()->addMonths(10),
-            'monthly_rent' => $unit->rent,
+            'rent_amount' => $unit->rent,
             'status' => 'Active',
         ]);
 

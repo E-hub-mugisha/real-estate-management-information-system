@@ -15,10 +15,14 @@ class MaintenanceSeeder extends Seeder
     public function run(): void
     {
         $tenant = Tenant::first();
+        $unit = Tenant::first();
 
         MaintenanceRequest::create([
             'tenant_id' => $tenant->id,
+            'unit_id' => $unit->id,
             'description' => 'Water leakage in the kitchen',
+            'title' => 'Water leakage in the kitchen',
+            'priority' => 'high',
             'status' => 'Pending',
         ]);
     }

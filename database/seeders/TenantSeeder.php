@@ -19,7 +19,10 @@ class TenantSeeder extends Seeder
         Tenant::create([
             'user_id' => $tenantUser->id,
             'phone' => '0788000000',
-            'id_document' => 'documents/id_sample.pdf',
+            'national_id' => 'documents/id_sample.pdf',
+            'employment' => "software engineer",
+            'unit_id' => null,
+            
         ]);
     }
 }

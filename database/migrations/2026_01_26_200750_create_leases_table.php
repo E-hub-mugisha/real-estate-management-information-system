@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('unit_id')->constrained('units');
             $table->date('start_date');
             $table->date('end_date');
-            $table->decimal('monthly_rent', 10, 2);
+            $table->decimal('rent_amount', 10, 2);
             $table->enum('status', ['Active', 'Expired', 'Terminated']);
             $table->timestamps();
         });

@@ -20,7 +20,7 @@ class PaymentSeeder extends Seeder
         for ($i = 1; $i <= 3; $i++) {
             Payment::create([
                 'lease_id' => $lease->id,
-                'amount' => $lease->monthly_rent,
+                'amount' => $lease->rent_amount,
                 'payment_date' => Carbon::now()->subMonths($i),
                 'method' => 'Bank Transfer',
             ]);

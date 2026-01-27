@@ -55,7 +55,7 @@
     </div>
 </div>
 
-@push('scripts')
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -113,5 +113,5 @@
         options: { responsive:true, scales:{y:{beginAtZero:true}} }
     });
 </script>
-@endpush
+
 @endsection

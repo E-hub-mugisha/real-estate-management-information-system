@@ -71,7 +71,7 @@ class ReportController extends Controller
         $maintenanceTrend = MaintenanceRequest::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
                             ->groupBy('month')->pluck('total','month')->all();
 
-        return view('admin.reports.index', compact(
+        return view('reports.index', compact(
             'properties','tenants','leases','payments','maintenanceRequests',
             'occupancyTrend','paymentTrend','maintenanceTrend'
         ));
@@ -87,7 +87,7 @@ class ReportController extends Controller
     public function exportPDF(Request $request)
     {
         $payments = Payment::with('lease.tenant.user','lease.unit.property')->get();
-        $pdf = Pdf::loadView('admin.reports.pdf', compact('payments'));
+        $pdf = Pdf::loadView('reports.pdf', compact('payments'));
         return $pdf->download('payments.pdf');
     }
 }
