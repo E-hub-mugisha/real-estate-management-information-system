@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('phone');
-            $table->string('id_document')->nullable();
+            $table->string('national_id')->nullable();
+            $table->string('employment')->nullable();
+            $table->foreignId('unit_id')->nullable()->constrained('units')->nullOnDelete();
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
         });
     }

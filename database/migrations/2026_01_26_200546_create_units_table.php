@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->foreignId('property_id')->constrained('properties');
-    $table->string('unit_number');
-    $table->decimal('rent',10,2);
-    $table->enum('status',['Vacant','Occupied']);
+            $table->string('unit_number');
+            $table->decimal('rent', 10, 2);
+            $table->enum('status', ['Vacant', 'Occupied']);
             $table->timestamps();
         });
     }

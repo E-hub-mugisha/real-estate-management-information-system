@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('maintenance_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained('tenants');
-    $table->text('description');
-    $table->enum('status',['Pending','In Progress','Completed']);
+            $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete();
+            $table->foreignId('unit_id')->constrained('units')->cascadeOnDelete();
+            $table->string('title');
+            $table->text('description');
+            $table->enum('priority', ['Low', 'Medium', 'High'])->default('Medium');
+            $table->enum('status', ['Pending', 'In Progress', 'Completed'])->default('Pending');
             $table->timestamps();
         });
     }
