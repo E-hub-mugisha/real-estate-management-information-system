@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('location');
             $table->enum('type', ['Residential', 'Commercial']);
-            $table->foreignId('owner_id')->constrained('users');
+            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
