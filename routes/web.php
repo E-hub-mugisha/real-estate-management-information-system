@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\LeaseController;
@@ -16,9 +17,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    Route::get('/dashboard/analytics', [DashboardController::class, 'analytics'])
+        ->name('dashboard.analytics');
 
 // PROFILE
 Route::middleware('auth')->group(function () {
