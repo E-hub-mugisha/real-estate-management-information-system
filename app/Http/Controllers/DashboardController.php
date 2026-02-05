@@ -45,6 +45,8 @@ class DashboardController extends Controller
             ->pluck('total', 'month')
             ->toArray();
 
+        $requests = MaintenanceRequest::with(['tenant.user', 'unit.property'])->latest()->get();
+
         return view('dashboard', compact(
             'totalUnits',
             'occupiedUnits',
@@ -53,7 +55,8 @@ class DashboardController extends Controller
             'pendingMaintenance',
             'payments',
             'occupancy',
-            'maintenance'
+            'maintenance',
+            'requests'
         ));
     }
 }

@@ -22,5 +22,8 @@ class Property extends Model
     {
         return $this->hasMany(Unit::class);
     }
-
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }

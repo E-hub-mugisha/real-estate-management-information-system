@@ -24,4 +24,8 @@ class MaintenanceRequest extends Model
     {
         return $this->belongsTo(Unit::class);
     }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }

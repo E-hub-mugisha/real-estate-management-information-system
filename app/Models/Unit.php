@@ -27,4 +27,8 @@ class Unit extends Model
     {
         return $this->hasMany(MaintenanceRequest::class);
     }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
