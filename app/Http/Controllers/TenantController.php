@@ -12,10 +12,10 @@ class TenantController extends Controller
 {
     public function index()
     {
-        $tenants = Tenant::with(['user','unit.property'])->get();
-        $units = Unit::where('status','Vacant')->get();
+        $tenants = Tenant::with(['user', 'unit.property'])->get();
+        $units = Unit::where('status', 'Vacant')->get();
 
-        return view('tenants.index', compact('tenants','units'));
+        return view('tenants.index', compact('tenants', 'units'));
     }
 
     public function store(Request $request)
@@ -45,32 +45,47 @@ class TenantController extends Controller
 
         // Update unit status
         if ($request->unit_id) {
-            Unit::where('id',$request->unit_id)
-                ->update(['status'=>'Occupied']);
+            Unit::where('id', $request->unit_id)
+                ->update(['status' => 'Occupied']);
         }
 
-        return back()->with('success','Tenant onboarded successfully');
+        return back()->with('success', 'Tenant onboarded successfully');
     }
 
     public function update(Request $request, Tenant $tenant)
     {
         $tenant->update($request->only([
-            'phone','national_id','employment','unit_id','status'
+            'phone',
+            'national_id',
+            'employment',
+            'unit_id',
+            'status'
         ]));
 
-        return back()->with('success','Tenant updated');
+        return back()->with('success', 'Tenant updated');
     }
 
     public function destroy(Tenant $tenant)
     {
         if ($tenant->unit_id) {
-            Unit::where('id',$tenant->unit_id)
-                ->update(['status'=>'Vacant']);
+            Unit::where('id', $tenant->unit_id)
+                ->update(['status' => 'Vacant']);
         }
 
         $tenant->user->delete(); // removes account
         $tenant->delete();
 
-        return back()->with('success','Tenant removed');
+        return back()->with('success', 'Tenant removed');
+    }
+    public function show(Tenant $tenant)
+    {
+        $tenant->load([
+            'user',
+            'unit.property',
+            'leases',
+            'payments'
+        ]);
+
+        return view('tenants.show', compact('tenant'));
     }
 }

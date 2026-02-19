@@ -78,19 +78,6 @@
                     <p class="small opacity-75 mb-1">
                         <i class="bi bi-telephone me-2"></i> +250 788 000 000
                     </p>
-
-                    <!-- Social -->
-                    <div class="d-flex gap-2 mt-3">
-                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle">
-                            <i class="bi bi-twitter-x"></i>
-                        </a>
-                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle">
-                            <i class="bi bi-linkedin"></i>
-                        </a>
-                    </div>
                 </div>
 
             </div>

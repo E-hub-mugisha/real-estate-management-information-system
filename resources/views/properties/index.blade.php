@@ -20,13 +20,17 @@
             </tr>
         </thead>
         <tbody>
-        @foreach($properties as $property)
+            @foreach($properties as $property)
             <tr>
                 <td>{{ $property->name }}</td>
                 <td>{{ $property->location }}</td>
                 <td>{{ $property->type }}</td>
                 <td>{{ $property->owner->name ?? '-' }}</td>
                 <td>
+                    <a href="{{ route('properties.show', $property->id) }}"
+                        class="btn btn-sm btn-outline-primary">
+                        View
+                    </a>
                     <button class="btn btn-sm btn-warning"
                         data-bs-toggle="modal"
                         data-bs-target="#editProperty{{ $property->id }}">
@@ -34,7 +38,7 @@
                     </button>
 
                     <form action="{{ route('properties.destroy', $property) }}"
-                          method="POST" class="d-inline">
+                        method="POST" class="d-inline">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-danger"
                             onclick="return confirm('Delete this property?')">
@@ -44,56 +48,59 @@
                 </td>
             </tr>
 
-            {{-- EDIT MODAL --}}
-            <div class="modal fade" id="editProperty{{ $property->id }}">
-                <div class="modal-dialog">
-                    <form method="POST"
-                        action="{{ route('properties.update', $property) }}"
-                        class="modal-content">
-                        @csrf @method('PUT')
 
-                        <div class="modal-header">
-                            <h5>Edit Property</h5>
-                            <button class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <input class="form-control mb-2" name="name"
-                                value="{{ $property->name }}" required>
-
-                            <input class="form-control mb-2" name="location"
-                                value="{{ $property->location }}" required>
-
-                            <select class="form-control mb-2" name="type">
-                                <option {{ $property->type == 'Residential' ? 'selected' : '' }}>
-                                    Residential
-                                </option>
-                                <option {{ $property->type == 'Commercial' ? 'selected' : '' }}>
-                                    Commercial
-                                </option>
-                            </select>
-
-                            <select class="form-control" name="owner_id">
-                                @foreach($owners as $owner)
-                                    <option value="{{ $owner->id }}"
-                                        {{ $property->owner_id == $owner->id ? 'selected' : '' }}>
-                                        {{ $owner->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-primary">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        @endforeach
+            @endforeach
         </tbody>
     </table>
 </div>
 
+@foreach($properties as $property)
+{{-- EDIT MODAL --}}
+<div class="modal fade" id="editProperty{{ $property->id }}">
+    <div class="modal-dialog">
+        <form method="POST"
+            action="{{ route('properties.update', $property) }}"
+            class="modal-content">
+            @csrf @method('PUT')
+
+            <div class="modal-header">
+                <h5>Edit Property</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input class="form-control mb-2" name="name"
+                    value="{{ $property->name }}" required>
+
+                <input class="form-control mb-2" name="location"
+                    value="{{ $property->location }}" required>
+
+                <select class="form-control mb-2" name="type">
+                    <option {{ $property->type == 'Residential' ? 'selected' : '' }}>
+                        Residential
+                    </option>
+                    <option {{ $property->type == 'Commercial' ? 'selected' : '' }}>
+                        Commercial
+                    </option>
+                </select>
+
+                <select class="form-control" name="owner_id">
+                    @foreach($owners as $owner)
+                    <option value="{{ $owner->id }}"
+                        {{ $property->owner_id == $owner->id ? 'selected' : '' }}>
+                        {{ $owner->name }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
 {{-- CREATE MODAL --}}
 <div class="modal fade" id="addPropertyModal">
     <div class="modal-dialog">
@@ -121,7 +128,7 @@
                 <select class="form-control" name="owner_id" required>
                     <option value="">Select Owner</option>
                     @foreach($owners as $owner)
-                        <option value="{{ $owner->id }}">{{ $owner->name }}</option>
+                    <option value="{{ $owner->id }}">{{ $owner->name }}</option>
                     @endforeach
                 </select>
             </div>

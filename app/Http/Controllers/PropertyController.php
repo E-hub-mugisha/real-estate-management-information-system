@@ -50,4 +50,13 @@ class PropertyController extends Controller
 
         return back()->with('success', 'Property deleted successfully');
     }
+    public function show(Property $property)
+    {
+        $property->load([
+            'owner',
+            'units.leases.tenant.user'
+        ]);
+
+        return view('properties.show', compact('property'));
+    }
 }

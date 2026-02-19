@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach($units as $unit)
+            @foreach($units as $unit)
             <tr>
                 <td>{{ $unit->unit_number }}</td>
                 <td>{{ $unit->property->name ?? '-' }}</td>
@@ -38,7 +38,7 @@
                     </button>
 
                     <form action="{{ route('units.destroy', $unit) }}"
-                          method="POST" class="d-inline">
+                        method="POST" class="d-inline">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-danger"
                             onclick="return confirm('Delete this unit?')">
@@ -48,51 +48,55 @@
                 </td>
             </tr>
 
-            {{-- EDIT UNIT MODAL --}}
-            <div class="modal fade" id="editUnit{{ $unit->id }}">
-                <div class="modal-dialog">
-                    <form method="POST"
-                        action="{{ route('units.update', $unit) }}"
-                        class="modal-content">
-                        @csrf @method('PUT')
 
-                        <div class="modal-header">
-                            <h5>Edit Unit</h5>
-                            <button class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <input class="form-control mb-2" name="unit_number"
-                                value="{{ $unit->unit_number }}" required>
-
-                            <select class="form-control mb-2" name="property_id">
-                                @foreach($properties as $property)
-                                    <option value="{{ $property->id }}"
-                                        {{ $unit->property_id == $property->id ? 'selected' : '' }}>
-                                        {{ $property->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            <input type="number" class="form-control mb-2"
-                                name="rent" value="{{ $unit->rent }}" required>
-
-                            <select class="form-control" name="status">
-                                <option {{ $unit->status == 'Vacant' ? 'selected' : '' }}>Vacant</option>
-                                <option {{ $unit->status == 'Occupied' ? 'selected' : '' }}>Occupied</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-primary">Update Unit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        @endforeach
+            @endforeach
         </tbody>
     </table>
 </div>
+
+@foreach($units as $unit)
+{{-- EDIT UNIT MODAL --}}
+<div class="modal fade" id="editUnit{{ $unit->id }}">
+    <div class="modal-dialog">
+        <form method="POST"
+            action="{{ route('units.update', $unit) }}"
+            class="modal-content">
+            @csrf @method('PUT')
+
+            <div class="modal-header">
+                <h5>Edit Unit</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input class="form-control mb-2" name="unit_number"
+                    value="{{ $unit->unit_number }}" required>
+
+                <select class="form-control mb-2" name="property_id">
+                    @foreach($properties as $property)
+                    <option value="{{ $property->id }}"
+                        {{ $unit->property_id == $property->id ? 'selected' : '' }}>
+                        {{ $property->name }}
+                    </option>
+                    @endforeach
+                </select>
+
+                <input type="number" class="form-control mb-2"
+                    name="rent" value="{{ $unit->rent }}" required>
+
+                <select class="form-control" name="status">
+                    <option {{ $unit->status == 'Vacant' ? 'selected' : '' }}>Vacant</option>
+                    <option {{ $unit->status == 'Occupied' ? 'selected' : '' }}>Occupied</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary">Update Unit</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
 
 {{-- CREATE UNIT MODAL --}}
 <div class="modal fade" id="addUnitModal">
@@ -112,7 +116,7 @@
                 <select class="form-control mb-2" name="property_id" required>
                     <option value="">Select Property</option>
                     @foreach($properties as $property)
-                        <option value="{{ $property->id }}">{{ $property->name }}</option>
+                    <option value="{{ $property->id }}">{{ $property->name }}</option>
                     @endforeach
                 </select>
 

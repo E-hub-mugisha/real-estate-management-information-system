@@ -11,7 +11,7 @@ class MaintenanceRequestController extends Controller
 {
     public function index()
     {
-        $requests = MaintenanceRequest::with(['tenant.user','unit.property'])->latest()->get();
+        $requests = MaintenanceRequest::with(['tenant.user', 'unit.property'])->latest()->get();
         return view('maintenance.index', compact('requests'));
     }
 
@@ -32,21 +32,54 @@ class MaintenanceRequestController extends Controller
             'priority' => $request->priority ?? 'Medium'
         ]);
 
-        return back()->with('success','Maintenance request submitted');
+        return back()->with('success', 'Maintenance request submitted');
     }
 
     public function update(Request $request, MaintenanceRequest $maintenanceRequest)
     {
         $maintenanceRequest->update($request->only([
-            'priority','status'
+            'priority',
+            'status'
         ]));
 
-        return back()->with('success','Maintenance status updated');
+        return back()->with('success', 'Maintenance status updated');
     }
 
     public function destroy(MaintenanceRequest $maintenanceRequest)
     {
         $maintenanceRequest->delete();
-        return back()->with('success','Maintenance request removed');
+        return back()->with('success', 'Maintenance request removed');
+    }
+    public function response(Request $request, MaintenanceRequest $maintenance)
+    {
+        $request->validate([
+            'response' => 'required|string'
+        ]);
+
+        $maintenance->update([
+            'response' => $request->response
+        ]);
+
+        return back()->with('success', 'Response sent to tenant');
+    }
+
+    public function updateStatus(Request $request, MaintenanceRequest $maintenance)
+    {
+        $request->validate([
+            'status' => 'required|in:Pending,In Progress,Resolved'
+        ]);
+
+        $maintenance->update([
+            'status' => $request->status,
+            'resolved_at' => $request->status === 'Resolved' ? now() : null
+        ]);
+
+        return back()->with('success', 'Status updated successfully');
+    }
+    public function show(MaintenanceRequest $maintenance)
+    {
+        $maintenance->load('tenant.user', 'unit.property');
+
+        return view('maintenance.show', compact('maintenance'));
     }
 }

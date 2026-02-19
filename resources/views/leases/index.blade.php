@@ -11,7 +11,7 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <div class="card">
@@ -29,7 +29,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($leases as $lease)
+                    @foreach($leases as $lease)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $lease->tenant->user->name }}</td>
@@ -60,52 +60,55 @@
                         </td>
                     </tr>
 
-                    {{-- EDIT LEASE MODAL --}}
-                    <div class="modal fade" id="editLease{{ $lease->id }}">
-                        <div class="modal-dialog">
-                            <form class="modal-content"
-                                method="POST"
-                                action="{{ route('leases.update',$lease) }}">
-                                @csrf @method('PUT')
 
-                                <div class="modal-header">
-                                    <h5>Edit Lease</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <input class="form-control mb-2"
-                                        name="rent_amount"
-                                        value="{{ $lease->rent_amount }}">
-
-                                    <input type="date" class="form-control mb-2"
-                                        name="start_date"
-                                        value="{{ $lease->start_date }}">
-
-                                    <input type="date" class="form-control mb-2"
-                                        name="end_date"
-                                        value="{{ $lease->end_date }}">
-
-                                    <select class="form-control" name="status">
-                                        <option {{ $lease->status=='Active'?'selected':'' }}>Active</option>
-                                        <option {{ $lease->status=='Expired'?'selected':'' }}>Expired</option>
-                                        <option {{ $lease->status=='Terminated'?'selected':'' }}>Terminated</option>
-                                    </select>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary">Update Lease</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                @endforeach
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
+@foreach($leases as $lease)
+{{-- EDIT LEASE MODAL --}}
+<div class="modal fade" id="editLease{{ $lease->id }}">
+    <div class="modal-dialog">
+        <form class="modal-content"
+            method="POST"
+            action="{{ route('leases.update',$lease) }}">
+            @csrf @method('PUT')
+
+            <div class="modal-header">
+                <h5>Edit Lease</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input class="form-control mb-2"
+                    name="rent_amount"
+                    value="{{ $lease->rent_amount }}">
+
+                <input type="date" class="form-control mb-2"
+                    name="start_date"
+                    value="{{ $lease->start_date }}">
+
+                <input type="date" class="form-control mb-2"
+                    name="end_date"
+                    value="{{ $lease->end_date }}">
+
+                <select class="form-control" name="status">
+                    <option {{ $lease->status=='Active'?'selected':'' }}>Active</option>
+                    <option {{ $lease->status=='Expired'?'selected':'' }}>Expired</option>
+                    <option {{ $lease->status=='Terminated'?'selected':'' }}>Terminated</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary">Update Lease</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
 {{-- ADD LEASE MODAL --}}
 <div class="modal fade" id="addLease">
     <div class="modal-dialog">
@@ -121,18 +124,18 @@
                 <select class="form-control mb-2" name="tenant_id" required>
                     <option value="">Select Tenant</option>
                     @foreach($tenants as $tenant)
-                        <option value="{{ $tenant->id }}">
-                            {{ $tenant->user->name }}
-                        </option>
+                    <option value="{{ $tenant->id }}">
+                        {{ $tenant->user->name }}
+                    </option>
                     @endforeach
                 </select>
 
                 <select class="form-control mb-2" name="unit_id" required>
                     <option value="">Select Unit</option>
                     @foreach($units as $unit)
-                        <option value="{{ $unit->id }}">
-                            {{ $unit->unit_number }} - {{ $unit->property->name }}
-                        </option>
+                    <option value="{{ $unit->id }}">
+                        {{ $unit->unit_number }} - {{ $unit->property->name }}
+                    </option>
                     @endforeach
                 </select>
 

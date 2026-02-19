@@ -12,7 +12,12 @@ class MaintenanceRequest extends Model
         'title',
         'description',
         'priority',
-        'status'
+        'status',
+        'response',
+        'resolved_at'
+    ];
+    protected $casts = [
+        'resolved_at' => 'datetime',
     ];
 
     public function tenant()

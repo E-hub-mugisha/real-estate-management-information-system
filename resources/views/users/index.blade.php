@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach($users as $user)
+            @foreach($users as $user)
             <tr>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
@@ -37,8 +37,8 @@
                         Edit
                     </button>
 
-                    <a href="{{ route('roles_permissions.index') }}?user_id={{ $user->id }}" 
-                       class="btn btn-sm btn-warning">Manage Permissions</a>
+                    <a href="{{ route('roles_permissions.index') }}?user_id={{ $user->id }}"
+                        class="btn btn-sm btn-warning">Manage Permissions</a>
 
                     <form action="{{ route('users.toggleStatus', $user) }}" method="POST" class="d-inline">
                         @csrf @method('PATCH')
@@ -55,45 +55,48 @@
                 </td>
             </tr>
 
-            {{-- EDIT MODAL --}}
-            <div class="modal fade" id="editUserModal{{ $user->id }}">
-                <div class="modal-dialog">
-                    <form method="POST" action="{{ route('users.update', $user) }}" class="modal-content">
-                        @csrf @method('PUT')
 
-                        <div class="modal-header">
-                            <h5>Edit User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <input class="form-control mb-2" name="name"
-                                value="{{ $user->name }}" required>
-
-                            <input class="form-control mb-2" name="email"
-                                value="{{ $user->email }}" required>
-
-                            <select name="role" class="form-control">
-                                @foreach($roles as $role)
-                                    <option value="{{ $role->name }}"
-                                        {{ $user->hasRole($role->name) ? 'selected' : '' }}>
-                                        {{ $role->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-primary">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        @endforeach
+            @endforeach
         </tbody>
     </table>
 </div>
 
+@foreach($users as $user)
+{{-- EDIT MODAL --}}
+<div class="modal fade" id="editUserModal{{ $user->id }}">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('users.update', $user) }}" class="modal-content">
+            @csrf @method('PUT')
+
+            <div class="modal-header">
+                <h5>Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input class="form-control mb-2" name="name"
+                    value="{{ $user->name }}" required>
+
+                <input class="form-control mb-2" name="email"
+                    value="{{ $user->email }}" required>
+
+                <select name="role" class="form-control">
+                    @foreach($roles as $role)
+                    <option value="{{ $role->name }}"
+                        {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                        {{ $role->name }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
 {{-- CREATE MODAL --}}
 <div class="modal fade" id="createUserModal">
     <div class="modal-dialog">
@@ -115,7 +118,7 @@
                 <select name="role" class="form-control" required>
                     <option value="">Select Role</option>
                     @foreach($roles as $role)
-                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                    <option value="{{ $role->name }}">{{ $role->name }}</option>
                     @endforeach
                 </select>
             </div>

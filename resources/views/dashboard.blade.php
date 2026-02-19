@@ -4,7 +4,7 @@
 
 <div class="container">
 
-    <h3 class="fw-bold mb-4">Admin Dashboard</h3>
+    <h3 class="fw-bold mb-4">Dashboard</h3>
 
     <!-- KPI CARDS -->
     <div class="row g-3 mb-4">
@@ -109,6 +109,9 @@
                             </span>
                         </td>
                         <td>
+                            <a href="{{ route('maintenance.show', $req->id) }}" class="btn btn-sm btn-info">
+                                View
+                            </a>
                             <button class="btn btn-sm btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#update{{ $req->id }}">

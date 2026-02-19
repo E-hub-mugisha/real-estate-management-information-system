@@ -29,8 +29,19 @@ class Tenant extends Model
         return $this->hasMany(Lease::class);
     }
     public function maintenanceRequests()
-{
-    return $this->hasMany(MaintenanceRequest::class);
-}
+    {
+        return $this->hasMany(MaintenanceRequest::class);
+    }
 
+    public function payments()
+    {
+        return $this->hasManyThrough(
+            Payment::class,
+            Lease::class,
+            'tenant_id', // FK on leases table
+            'lease_id',  // FK on payments table
+            'id',
+            'id'
+        );
+    }
 }

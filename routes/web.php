@@ -18,10 +18,10 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+    ->name('dashboard');
 
-    Route::get('/dashboard/analytics', [DashboardController::class, 'analytics'])
-        ->name('dashboard.analytics');
+Route::get('/dashboard/analytics', [DashboardController::class, 'analytics'])
+    ->name('dashboard.analytics');
 
 // PROFILE
 Route::middleware('auth')->group(function () {
@@ -32,30 +32,42 @@ Route::middleware('auth')->group(function () {
 
 // TENANT ROUTES
 Route::middleware(['auth'])->group(function () {
-    Route::post('maintenance', [MaintenanceRequestController::class,'store'])
+    Route::post('maintenance', [MaintenanceRequestController::class, 'store'])
         ->name('maintenance.store');
 });
 
 // ADMIN / MANAGER ROUTES
 Route::middleware(['auth'])->group(function () {
-    Route::resource('properties', PropertyController::class)->except(['create','edit']);
-    Route::resource('units', UnitController::class)->except(['create','edit','show']);
-    Route::resource('tenants', TenantController::class)->except(['create','edit']);
-    Route::resource('leases', LeaseController::class)->except(['create','edit','show']);
-    Route::resource('payments', PaymentController::class)->only(['index','store','destroy']);
-    Route::resource('maintenance', MaintenanceRequestController::class)->except(['create','edit','show','store']);
-    Route::get('reports', [ReportController::class,'index'])->name('reports.index');
-    Route::get('reports/export/excel', [ReportController::class,'exportExcel'])->name('reports.exportExcel');
-    Route::get('reports/export/pdf', [ReportController::class,'exportPDF'])->name('reports.exportPDF');
+    Route::resource('properties', PropertyController::class)->except(['create', 'edit']);
+    Route::get('/properties/{property}', [PropertyController::class, 'show'])
+    ->name('properties.show');
+
+    Route::resource('units', UnitController::class)->except(['create', 'edit', 'show']);
+    Route::resource('tenants', TenantController::class)->except(['create', 'edit']);
+    Route::get('tenants/{tenant}', [TenantController::class, 'show'])->name('tenants.show');
+    Route::resource('leases', LeaseController::class)->except(['create', 'edit', 'show']);
+    Route::resource('payments', PaymentController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('maintenance', MaintenanceRequestController::class)->except(['create', 'edit', 'show', 'store']);
+    Route::get('maintenance/{maintenance}', [MaintenanceRequestController::class, 'show'])
+        ->name('maintenance.show');
+
+    Route::patch('maintenance/{maintenance}/update-status', [MaintenanceRequestController::class, 'updateStatus'])
+        ->name('maintenance.updateStatus');
+
+    Route::post('maintenance/{maintenance}/response', [MaintenanceRequestController::class, 'response'])
+        ->name('maintenance.response');
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export/excel', [ReportController::class, 'exportExcel'])->name('reports.exportExcel');
+    Route::get('reports/export/pdf', [ReportController::class, 'exportPDF'])->name('reports.exportPDF');
 });
 
 // ADMIN-ONLY
 Route::middleware(['auth'])->group(function () {
     Route::resource('users', UserController::class);
-    Route::get('roles-permissions', [RolePermissionController::class,'index'])->name('roles_permissions.index');
-    Route::post('roles-permissions/{user}/update-permissions', [RolePermissionController::class,'updatePermissions'])->name('roles_permissions.updatePermissions');
-    Route::post('roles-permissions/{user}/update-roles', [RolePermissionController::class,'updateRoles'])->name('roles_permissions.updateRoles');
+    Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles_permissions.index');
+    Route::post('roles-permissions/{user}/update-permissions', [RolePermissionController::class, 'updatePermissions'])->name('roles_permissions.updatePermissions');
+    Route::post('roles-permissions/{user}/update-roles', [RolePermissionController::class, 'updateRoles'])->name('roles_permissions.updateRoles');
     Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

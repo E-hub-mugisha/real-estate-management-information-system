@@ -13,7 +13,7 @@
 
     {{-- SUCCESS MESSAGE --}}
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     {{-- TENANTS TABLE --}}
@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @forelse($tenants as $tenant)
+                    @forelse($tenants as $tenant)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $tenant->user->name }}</td>
@@ -49,6 +49,11 @@
                             </span>
                         </td>
                         <td>
+                            <a href="{{ route('tenants.show', $tenant->id) }}"
+                                class="btn btn-sm btn-info">
+                                View
+                            </a>
+
                             <button class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editTenant{{ $tenant->id }}">
@@ -56,8 +61,8 @@
                             </button>
 
                             <form method="POST"
-                                  action="{{ route('tenants.destroy',$tenant) }}"
-                                  class="d-inline">
+                                action="{{ route('tenants.destroy',$tenant) }}"
+                                class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-danger"
@@ -68,83 +73,86 @@
                         </td>
                     </tr>
 
-                    {{-- EDIT TENANT MODAL --}}
-                    <div class="modal fade" id="editTenant{{ $tenant->id }}">
-                        <div class="modal-dialog">
-                            <form class="modal-content"
-                                  method="POST"
-                                  action="{{ route('tenants.update',$tenant) }}">
-                                @csrf
-                                @method('PUT')
 
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit Tenant</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="mb-2">
-                                        <label class="form-label">Phone</label>
-                                        <input class="form-control"
-                                               name="phone"
-                                               value="{{ $tenant->phone }}">
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="form-label">National ID</label>
-                                        <input class="form-control"
-                                               name="national_id"
-                                               value="{{ $tenant->national_id }}">
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="form-label">Employment</label>
-                                        <input class="form-control"
-                                               name="employment"
-                                               value="{{ $tenant->employment }}">
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="form-label">Unit</label>
-                                        <select class="form-control" name="unit_id">
-                                            <option value="">No Unit</option>
-                                            @foreach($units as $unit)
-                                                <option value="{{ $unit->id }}"
-                                                    {{ $tenant->unit_id == $unit->id ? 'selected' : '' }}>
-                                                    {{ $unit->unit_number }} - {{ $unit->property->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="form-label">Status</label>
-                                        <select class="form-control" name="status">
-                                            <option {{ $tenant->status=='Active'?'selected':'' }}>Active</option>
-                                            <option {{ $tenant->status=='Inactive'?'selected':'' }}>Inactive</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary">Update Tenant</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                @empty
+                    @empty
                     <tr>
                         <td colspan="7" class="text-center text-muted">
                             No tenants found
                         </td>
                     </tr>
-                @endforelse
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
+@foreach($tenants as $tenant)
+{{-- EDIT TENANT MODAL --}}
+<div class="modal fade" id="editTenant{{ $tenant->id }}">
+    <div class="modal-dialog">
+        <form class="modal-content"
+            method="POST"
+            action="{{ route('tenants.update',$tenant) }}">
+            @csrf
+            @method('PUT')
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Tenant</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control"
+                        name="phone"
+                        value="{{ $tenant->phone }}">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">National ID</label>
+                    <input class="form-control"
+                        name="national_id"
+                        value="{{ $tenant->national_id }}">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Employment</label>
+                    <input class="form-control"
+                        name="employment"
+                        value="{{ $tenant->employment }}">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Unit</label>
+                    <select class="form-control" name="unit_id">
+                        <option value="">No Unit</option>
+                        @foreach($units as $unit)
+                        <option value="{{ $unit->id }}"
+                            {{ $tenant->unit_id == $unit->id ? 'selected' : '' }}>
+                            {{ $unit->unit_number }} - {{ $unit->property->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Status</label>
+                    <select class="form-control" name="status">
+                        <option {{ $tenant->status=='Active'?'selected':'' }}>Active</option>
+                        <option {{ $tenant->status=='Inactive'?'selected':'' }}>Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary">Update Tenant</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
 {{-- ADD TENANT MODAL --}}
 <div class="modal fade" id="addTenantModal">
     <div class="modal-dialog">
@@ -187,9 +195,9 @@
                     <select class="form-control" name="unit_id">
                         <option value="">Select Unit</option>
                         @foreach($units as $unit)
-                            <option value="{{ $unit->id }}">
-                                {{ $unit->unit_number }} - {{ $unit->property->name }}
-                            </option>
+                        <option value="{{ $unit->id }}">
+                            {{ $unit->unit_number }} - {{ $unit->property->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>

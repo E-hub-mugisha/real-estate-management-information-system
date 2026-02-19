@@ -6,7 +6,7 @@
     <h4 class="fw-bold mb-4">Maintenance Requests</h4>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <div class="card">
@@ -24,7 +24,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($requests as $req)
+                    @foreach($requests as $req)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $req->tenant->user->name }}</td>
@@ -39,6 +39,10 @@
                             </span>
                         </td>
                         <td>
+                            <a href="{{ route('maintenance.show', $req->id) }}" class="btn btn-sm btn-info">
+                                View
+                            </a>
+
                             <button class="btn btn-sm btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#update{{ $req->id }}">
@@ -47,43 +51,47 @@
                         </td>
                     </tr>
 
-                    {{-- UPDATE MODAL --}}
-                    <div class="modal fade" id="update{{ $req->id }}">
-                        <div class="modal-dialog">
-                            <form class="modal-content"
-                                  method="POST"
-                                  action="{{ route('maintenance.update',$req) }}">
-                                @csrf @method('PUT')
 
-                                <div class="modal-header">
-                                    <h5>Update Request</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <select class="form-control mb-2" name="priority">
-                                        <option {{ $req->priority=='Low'?'selected':'' }}>Low</option>
-                                        <option {{ $req->priority=='Medium'?'selected':'' }}>Medium</option>
-                                        <option {{ $req->priority=='High'?'selected':'' }}>High</option>
-                                    </select>
-
-                                    <select class="form-control" name="status">
-                                        <option {{ $req->status=='Pending'?'selected':'' }}>Pending</option>
-                                        <option {{ $req->status=='In Progress'?'selected':'' }}>In Progress</option>
-                                        <option {{ $req->status=='Completed'?'selected':'' }}>Completed</option>
-                                    </select>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button class="btn btn-success">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                @endforeach
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+@foreach($requests as $req)
+{{-- UPDATE MODAL --}}
+<div class="modal fade" id="update{{ $req->id }}">
+    <div class="modal-dialog">
+        <form class="modal-content"
+            method="POST"
+            action="{{ route('maintenance.update',$req) }}">
+            @csrf @method('PUT')
+
+            <div class="modal-header">
+                <h5>Update Request</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <select class="form-control mb-2" name="priority">
+                    <option {{ $req->priority=='Low'?'selected':'' }}>Low</option>
+                    <option {{ $req->priority=='Medium'?'selected':'' }}>Medium</option>
+                    <option {{ $req->priority=='High'?'selected':'' }}>High</option>
+                </select>
+
+                <select class="form-control" name="status">
+                    <option {{ $req->status=='Pending'?'selected':'' }}>Pending</option>
+                    <option {{ $req->status=='In Progress'?'selected':'' }}>In Progress</option>
+                    <option {{ $req->status=='Completed'?'selected':'' }}>Completed</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
 @endsection
