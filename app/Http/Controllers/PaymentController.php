@@ -19,7 +19,8 @@ class PaymentController extends Controller
         $request->validate([
             'lease_id' => 'required',
             'amount' => 'required|numeric|min:1',
-            'payment_date' => 'required|date'
+            'payment_date' => 'required|date',
+            'method' => 'required'
         ]);
 
         Payment::create($request->all());

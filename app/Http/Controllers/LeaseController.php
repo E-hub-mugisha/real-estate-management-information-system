@@ -13,7 +13,7 @@ class LeaseController extends Controller
     {
         $leases = Lease::with(['tenant.user','unit.property'])->get();
         $tenants = Tenant::where('status','Active')->get();
-        $units = Unit::where('status','Vacant')->get();
+        $units = Unit::all();
 
         return view('leases.index', compact('leases','tenants','units'));
     }

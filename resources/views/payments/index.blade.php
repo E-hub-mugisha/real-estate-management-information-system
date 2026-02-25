@@ -84,10 +84,10 @@
 
                 <div class="mb-2">
                     <label class="form-label">Payment Method</label>
-                    <select class="form-control" name="payment_method">
-                        <option>Cash</option>
-                        <option>Bank Transfer</option>
-                        <option>Mobile Money</option>
+                    <select class="form-control" name="method">
+                        <option value="cash">Cash</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="mobile">Mobile Money</option>
                     </select>
                 </div>
             </div>

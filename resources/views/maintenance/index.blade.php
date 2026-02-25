@@ -2,13 +2,24 @@
 
 @section('content')
 <div class="container">
-
-    <h4 class="fw-bold mb-4">Maintenance Requests</h4>
-
+    <div class="d-flex justify-content-between mb-4">
+        <h4 class="fw-bold">Maintenance Requests</h4>
+        <button class="btn btn-sm btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createMaintenance">
+            Create Maintenance
+        </button>
+    </div>
     @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+        <div>{{ $error }}</div>
+        @endforeach
+    </div>
+    @endif
     <div class="card">
         <div class="card-body">
             <table class="table table-bordered align-middle">
@@ -94,4 +105,61 @@
     </div>
 </div>
 @endforeach
+
+{{-- ADD MODAL --}}
+<div class="modal fade" id="createMaintenance">
+    <div class="modal-dialog">
+        <form class="modal-content" method="POST" action="{{ route('maintenance.store') }}">
+            @csrf
+
+            <div class="modal-header">
+                <h5>Create Maintenance</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <select class="form-control mb-2" name="tenant_id" required>
+                    <option value="">Select Tenant</option>
+                    @foreach($tenants as $tenant)
+                    <option value="{{ $tenant->id }}">
+                        {{ $tenant->user->name }}
+                    </option>
+                    @endforeach
+                </select>
+
+                <select class="form-control mb-2" name="unit_id" required>
+                    <option value="">Select Unit</option>
+                    @foreach($units as $unit)
+                    <option value="{{ $unit->id }}">
+                        {{ $unit->unit_number }} - {{ $unit->property->name }}
+                    </option>
+                    @endforeach
+                </select>
+
+                <input type="text" class="form-control mb-2"
+                    name="title"
+                    placeholder="title" required>
+                <div class="mb-3">
+                    <textarea name="description" class="form-control" rows="3"
+                        placeholder="Write description to tenant..."></textarea>
+                </div>
+                <select class="form-control mb-2" name="priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
+
+                <select class="form-control" name="status">
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection

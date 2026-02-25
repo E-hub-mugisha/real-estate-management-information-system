@@ -29,7 +29,7 @@
                 </li>
                 @endif
 
-                @if(Auth::check() && in_array(Auth::user()->role, ['admin', 'manager']))
+                @if(Auth::check() && in_array(Auth::user()->role, ['admin', 'owner']))
                 <li class="nav-item">
                     <a class="nav-link px-3 {{ request()->routeIs('properties.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
                         href="{{ route('properties.index') }}">

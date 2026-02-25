@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MaintenanceRequest;
 use App\Models\Tenant;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,27 +13,32 @@ class MaintenanceRequestController extends Controller
     public function index()
     {
         $requests = MaintenanceRequest::with(['tenant.user', 'unit.property'])->latest()->get();
-        return view('maintenance.index', compact('requests'));
+        $tenants = Tenant::where('status', 'Active')->get();
+        $units = Unit::all();
+        return view('maintenance.index', compact('requests', 'tenants', 'units'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'description' => 'required'
+            'tenant_id' => 'required|exists:tenants,id',
+            'unit_id'   => 'required|exists:units,id',
+            'title'     => 'required|string|max:255',
+            'description' => 'required|string',
+            'priority'  => 'nullable|in:Low,Medium,High',
+            'status'    => 'required|in:Pending,In Progress,Completed',
         ]);
 
-        $tenant = Auth::user()->tenant;
+        MaintenanceRequest::create($request->only(
+            'tenant_id',
+            'unit_id',
+            'title',
+            'description',
+            'priority',
+            'status'
+        ));
 
-        MaintenanceRequest::create([
-            'tenant_id' => $tenant->id,
-            'unit_id' => $tenant->unit_id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'priority' => $request->priority ?? 'Medium'
-        ]);
-
-        return back()->with('success', 'Maintenance request submitted');
+        return back()->with('success', 'Maintenance request created');
     }
 
     public function update(Request $request, MaintenanceRequest $maintenanceRequest)
