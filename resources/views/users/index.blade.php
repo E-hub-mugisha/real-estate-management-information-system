@@ -24,7 +24,7 @@
             <tr>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                <td>{{ $user->roles->first()->name ?? '-' }}</td>
+                <td>{{ $user->role?? '-' }}</td>
                 <td>
                     <span class="badge bg-{{ $user->status ? 'success' : 'danger' }}">
                         {{ $user->status ? 'Active' : 'Inactive' }}
