@@ -107,12 +107,6 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 {{ request()->routeIs('reports.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
-                        href="{{ route('reports.index') }}">
-                        <i class="bi bi-bar-chart-line me-1"></i> Reports
-                    </a>
-                </li>
                 @endif
             </ul>
 
@@ -159,3 +153,13 @@
         </div>
     </div>
 </nav>
+
+
+<!-- MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=kabosierik@gmail.com
+MAIL_PASSWORD=azzzuzkifhdtjhkc
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=kabosierik@gmail.com
+MAIL_FROM_NAME="${APP_NAME}" -->
