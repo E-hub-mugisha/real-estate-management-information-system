@@ -79,7 +79,7 @@
                     </a>
                 </li>
                 @endif
-                @if(Auth::check() && Auth::user()->role == 'tenants')
+                @if(Auth::check() && Auth::user()->role == 'tenant')
                 
                 <li class="nav-item">
                     <a class="nav-link px-3 {{ request()->routeIs('leases.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
