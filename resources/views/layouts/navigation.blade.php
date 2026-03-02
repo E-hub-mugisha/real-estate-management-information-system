@@ -80,7 +80,12 @@
                 </li>
                 @endif
                 @if(Auth::check() && Auth::user()->role == 'tenant')
-                
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ request()->routeIs('properties.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
+                        href="{{ route('properties.index') }}">
+                        <i class="bi bi-house-door me-1"></i> Properties
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link px-3 {{ request()->routeIs('leases.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
                         href="{{ route('leases.index') }}">
