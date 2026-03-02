@@ -155,11 +155,3 @@
 </nav>
 
 
-<!-- MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=kabosierik@gmail.com
-MAIL_PASSWORD=azzzuzkifhdtjhkc
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=kabosierik@gmail.com
-MAIL_FROM_NAME="${APP_NAME}" -->

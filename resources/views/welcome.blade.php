@@ -64,7 +64,7 @@
 
                     <div class="d-flex gap-3">
                         @auth
-                        <a href="{{ route('admin.dashboard') }}" class="btn btn-light btn-lg px-4">
+                        <a href="{{ route('dashboard') }}" class="btn btn-light btn-lg px-4">
                             Go to Dashboard
                         </a>
                         @else
