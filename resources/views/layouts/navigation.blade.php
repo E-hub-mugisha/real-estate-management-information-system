@@ -79,7 +79,36 @@
                     </a>
                 </li>
                 @endif
+                @if(Auth::check() && Auth::user()->role == 'tenants')
+                
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ request()->routeIs('leases.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
+                        href="{{ route('leases.index') }}">
+                        <i class="bi bi-file-earmark-text me-1"></i> Leases
+                    </a>
+                </li>
 
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ request()->routeIs('payments.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
+                        href="{{ route('payments.index') }}">
+                        <i class="bi bi-credit-card me-1"></i> Payments
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ request()->routeIs('maintenance.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
+                        href="{{ route('maintenance.index') }}">
+                        <i class="bi bi-tools me-1"></i> Maintenance
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ request()->routeIs('reports.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
+                        href="{{ route('reports.index') }}">
+                        <i class="bi bi-bar-chart-line me-1"></i> Reports
+                    </a>
+                </li>
+                @endif
             </ul>
 
             <!-- Right User Menu -->
