@@ -70,6 +70,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('requests/{requests}/response', [TenantRequestController::class, 'response'])
         ->name('requests.response');
+        Route::get('/inquiries', [PropertyController::class, 'adminIndex'])
+            ->name('inquiries.index');
         Route::get('/inquiries/create', [PropertyController::class, 'createInquiry'])->name('inquiries.create');
 Route::post('/inquiries', [PropertyController::class, 'storeInquiry'])->name('inquiries.store');
     Route::get('/tenant/profile', [TenantController::class, 'editTenantProfile'])->name('tenants.profile');
