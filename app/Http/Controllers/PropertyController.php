@@ -10,14 +10,14 @@ use Illuminate\Support\Str;
 
 class PropertyController extends Controller
 {
-    public function adminIndex()
-{
-    $inquiries = Inquiry::with(['property', 'tenant.user'])
-        ->latest()
-        ->paginate(10);
+    public function indexInquiry()
+    {
+        $inquiries = Inquiry::with(['property', 'tenant.user'])
+            ->latest()
+            ->paginate(10);
 
-    return view('properties.inquiries-index', compact('inquiries'));
-}
+        return view('properties.inquiries-index', compact('inquiries'));
+    }
     public function index()
     {
         $user = auth()->user();

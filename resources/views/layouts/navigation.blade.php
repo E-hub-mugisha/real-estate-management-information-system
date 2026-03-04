@@ -38,6 +38,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link px-3 {{ request()->routeIs('inquiries.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
+                        href="{{ route('inquiries.index') }}">
+                        <i class="bi bi-grid me-1"></i> Inquiries
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link px-3 {{ request()->routeIs('units.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
                         href="{{ route('units.index') }}">
                         <i class="bi bi-grid me-1"></i> Units

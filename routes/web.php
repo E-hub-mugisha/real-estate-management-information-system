@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('properties', PropertyController::class);
     Route::get('/properties/{property}', [PropertyController::class, 'show'])
-    ->name('properties.show');
+        ->name('properties.show');
 
     Route::resource('units', UnitController::class)->except(['create', 'edit', 'show']);
     Route::resource('tenants', TenantController::class)->except(['create', 'edit']);
@@ -70,10 +70,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('requests/{requests}/response', [TenantRequestController::class, 'response'])
         ->name('requests.response');
-        Route::get('/inquiries', [PropertyController::class, 'adminIndex'])
-            ->name('inquiries.index');
-        Route::get('/inquiries/create', [PropertyController::class, 'createInquiry'])->name('inquiries.create');
-Route::post('/inquiries', [PropertyController::class, 'storeInquiry'])->name('inquiries.store');
+    Route::get('/inquiries', [PropertyController::class, 'indexInquiry'])
+        ->name('inquiries.index');
+    Route::get('/inquiries/create', [PropertyController::class, 'createInquiry'])->name('inquiries.create');
+    Route::post('/inquiries', [PropertyController::class, 'storeInquiry'])->name('inquiries.store');
     Route::get('/tenant/profile', [TenantController::class, 'editTenantProfile'])->name('tenants.profile');
     Route::post('/tenant/profile', [TenantController::class, 'updateTenantProfile'])->name('tenant.profile.update');
 });

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
 <div class="container py-4">
@@ -16,6 +16,7 @@
                 <th>Tenant</th>
                 <th>Status</th>
                 <th>Date</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -33,7 +34,21 @@
                         </span>
                     </td>
                     <td>{{ $inquiry->created_at->format('d M Y') }}</td>
-                    
+                    <td>
+                        <a href="{{ route('admin.inquiries.show', $inquiry->id) }}"
+                           class="btn btn-sm btn-primary">View</a>
+
+                        <form action="{{ route('admin.inquiries.destroy', $inquiry->id) }}"
+                              method="POST"
+                              class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Delete this inquiry?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
