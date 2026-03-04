@@ -21,7 +21,7 @@ class TenantController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => 'required|email|unique:users',
             'phone' => 'required'
         ]);
@@ -87,5 +87,35 @@ class TenantController extends Controller
         ]);
 
         return view('tenants.show', compact('tenant'));
+    }
+
+    public function editTenantProfile()
+    {
+        return view('tenants.profile');
+    }
+
+    public function updateTenantProfile(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string|max:20',
+            'national_id' => 'nullable|string|max:20',
+            'employment' => 'nullable|string|max:255',
+        ]);
+
+        $user = auth()->user();
+
+        $tenant = $user->tenant ?? new Tenant();
+        $tenant->user_id = $user->id;
+        $tenant->phone = $request->phone;
+        $tenant->national_id = $request->national_id;
+        $tenant->employment = $request->employment;
+
+        // Optional: Add profile_complete column if you want
+        $tenant->profile_complete = true;
+
+        $tenant->save();
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Profile completed successfully.');
     }
 }

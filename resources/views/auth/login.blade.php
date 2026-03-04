@@ -46,7 +46,15 @@
             <div class="glass-card p-4 text-white">
                 <h3 class="fw-bold mb-3 text-center">Welcome Back 👋</h3>
                 <p class="text-center opacity-75 mb-4">Login to manage your properties</p>
-
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
@@ -56,9 +64,29 @@
                     </div>
 
                     <div class="mb-3">
-                        <label>Password</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <label class="form-label">Password</label>
+                        <div class="position-relative">
+                            <input type="password" name="password" id="passwordField"
+                                class="form-control pe-5" required>
+
+                            <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer"
+                                id="togglePassword"
+                                style="font-size: 1.2rem; cursor: pointer; color: #6c757d;"></i>
+                        </div>
                     </div>
+
+                    <script>
+                        const togglePassword = document.getElementById('togglePassword');
+                        const passwordField = document.getElementById('passwordField');
+
+                        togglePassword.addEventListener('click', function() {
+                            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                            passwordField.setAttribute('type', type);
+
+                            this.classList.toggle('bi-eye');
+                            this.classList.toggle('bi-eye-slash');
+                        });
+                    </script>
 
                     <div class="d-flex justify-content-between mb-3">
                         <div class="form-check">

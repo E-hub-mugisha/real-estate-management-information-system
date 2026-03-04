@@ -15,6 +15,17 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+
+        if ($user->role === 'tenant') {
+
+            if (!$user->tenant || $user->tenant->profile_complete === false) {
+                return redirect()
+                    ->route('tenants.profile')
+                    ->with('warning', 'Please complete your profile to access the dashboard');
+            }
+        }
+
         $totalUnits = Unit::count();
 
         $occupiedUnits = Unit::whereHas('leases', function ($q) {

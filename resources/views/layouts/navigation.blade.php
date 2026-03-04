@@ -101,9 +101,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link px-3 {{ request()->routeIs('maintenance.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
-                        href="{{ route('maintenance.index') }}">
-                        <i class="bi bi-tools me-1"></i> Maintenance
+                    <a class="nav-link px-3 {{ request()->routeIs('requests.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
+                        href="{{ route('requests.index') }}">
+                        <i class="bi bi-tools me-1"></i> Requests
                     </a>
                 </li>
 
@@ -125,7 +125,10 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-white"
                         href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle fs-5"></i>
+                        <!--  user name striped-->
+                        <div class="avatar bg-white text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                            {{ Auth::user()->name[0] }} <!-- First letter as avatar -->
+                        </div>
                         <span class="fw-semibold">{{ auth()->user()->name }}</span>
                     </a>
 
@@ -153,5 +156,3 @@
         </div>
     </div>
 </nav>
-
-

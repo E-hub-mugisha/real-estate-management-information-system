@@ -44,4 +44,9 @@ class Tenant extends Model
             'id'
         );
     }
+
+    public function inquiries()
+{
+    return $this->hasMany(Inquiry::class);
+}
 }

@@ -5,9 +5,11 @@
 
     <div class="d-flex justify-content-between mb-4">
         <h4 class="fw-bold">Lease Management</h4>
+        @if( Auth::user()->role == 'admin' || Auth::user()->role == 'owner')
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLease">
             + Create Lease
         </button>
+        @endif
     </div>
 
     @if(session('success'))
@@ -48,6 +50,7 @@
                                 Edit
                             </button>
 
+                            @if( Auth::user()->role == 'admin' || Auth::user()->role == 'owner')
                             <form method="POST"
                                 action="{{ route('leases.destroy',$lease) }}"
                                 class="d-inline">
@@ -57,6 +60,7 @@
                                     Delete
                                 </button>
                             </form>
+                            @endif
                         </td>
                     </tr>
 

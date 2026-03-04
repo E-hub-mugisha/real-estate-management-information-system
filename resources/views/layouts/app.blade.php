@@ -24,6 +24,8 @@
     <!-- css -->
     <link rel="stylesheet" href="{{ asset('assets/css/dashlitee1e3.css?ver=3.2.4') }}">
     <link id="skin-default" rel="stylesheet" href="{{ asset('assets/css/themee1e3.css?ver=3.2.4')}}">
+
+    
 </head>
 
 <body>
@@ -100,7 +102,6 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
     <!-- Initialize DataTables -->
     <script>
         $(document).ready(function() {
@@ -113,7 +114,7 @@
         });
     </script>
 
-    @stack('scripts')
+    
 </body>
 
 </html>

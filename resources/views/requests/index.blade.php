@@ -1,85 +1,25 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+
 @section('content')
-
 <div class="container">
-
-    <h3 class="fw-bold mb-4">Dashboard</h3>
-    <p>Welcome to {{ auth()->user()->name }}'s {{ auth()->user()->role }} dashboard!</p>
-
-    <!-- KPI CARDS -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Total Units</h6>
-                    <h3>{{ $totalUnits }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Occupied Units</h6>
-                    <h3 class="text-success">{{ $occupiedUnits }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Vacant Units</h6>
-                    <h3 class="text-danger">{{ $vacantUnits }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Total Revenue</h6>
-                    <h3>{{ number_format($totalRevenue) }}</h3>
-                </div>
-            </div>
-        </div>
+    <div class="d-flex justify-content-between mb-4">
+        <h4 class="fw-bold">Requests</h4>
+        <button class="btn btn-sm btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createMaintenance">
+            Create Request
+        </button>
     </div>
-
-    <!-- CHARTS -->
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3">
-                <h6>Occupancy Trend (This Year)</h6>
-                <canvas id="occupancyChart"></canvas>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3">
-                <h6>Payment Collection Trend</h6>
-                <canvas id="paymentChart"></canvas>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3">
-                <h6>Maintenance Requests</h6>
-                <canvas id="maintenanceChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="container py-4">
-
-    <h4 class="fw-bold mb-4">Maintenance Requests</h4>
-
     @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+        <div>{{ $error }}</div>
+        @endforeach
+    </div>
+    @endif
     <div class="card">
         <div class="card-body">
             <table class="table table-bordered align-middle">
@@ -110,9 +50,10 @@
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('maintenance.show', $req->id) }}" class="btn btn-sm btn-info">
+                            <a href="{{ route('requests.show', $req->id) }}" class="btn btn-sm btn-info">
                                 View
                             </a>
+
                             <button class="btn btn-sm btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#update{{ $req->id }}">
@@ -120,6 +61,8 @@
                             </button>
                         </td>
                     </tr>
+
+
                     @endforeach
                 </tbody>
             </table>
@@ -163,46 +106,45 @@
 </div>
 @endforeach
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{-- ADD MODAL --}}
+<div class="modal fade" id="createMaintenance">
+    <div class="modal-dialog">
+        <form class="modal-content" method="POST" action="{{ route('maintenance.store') }}">
+            @csrf
 
-<script>
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            <div class="modal-header">
+                <h5>Create Requests</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-    const occupancyData = @json(array_values($occupancy));
-    const paymentData = @json(array_values($payments));
-    const maintenanceData = @json(array_values($maintenance));
+            <div class="modal-body">
+                <input type="hidden" name="tenant_id" value="{{ auth()->user()->tenant->id }}">
+                <input type="hidden" name="unit_id" value="{{ auth()->user()->tenant->unit->id ?? 1 }}">
 
-    new Chart(document.getElementById('occupancyChart'), {
-        type: 'bar',
-        data: {
-            labels: months,
-            datasets: [{
-                label: 'Leases',
-                data: occupancyData
-            }]
-        }
-    });
+                <input type="text" class="form-control mb-2"
+                    name="title"
+                    placeholder="title" required>
+                <div class="mb-3">
+                    <textarea name="description" class="form-control" rows="3"
+                        placeholder="Write description to tenant..."></textarea>
+                </div>
+                <select class="form-control mb-2" name="priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
 
-    new Chart(document.getElementById('paymentChart'), {
-        type: 'line',
-        data: {
-            labels: months,
-            datasets: [{
-                label: 'Revenue',
-                data: paymentData
-            }]
-        }
-    });
+                <select class="form-control" name="status">
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
 
-    new Chart(document.getElementById('maintenanceChart'), {
-        type: 'line',
-        data: {
-            labels: months,
-            datasets: [{
-                label: 'Requests',
-                data: maintenanceData
-            }]
-        }
-    });
-</script>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection

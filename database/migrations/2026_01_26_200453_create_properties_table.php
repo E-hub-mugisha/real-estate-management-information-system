@@ -13,10 +13,37 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('location');
-            $table->enum('type', ['Residential', 'Commercial']);
-            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
+
+            // Basic info
+            $table->string('name')->comment('Property name or title');
+            $table->string('location')->comment('General location, city/area');
+            $table->string('address')->nullable()->comment('Full street address');
+            $table->string('slug')->unique()->comment('URL-friendly slug for SEO');
+
+            // Type & Status
+            $table->enum('type', ['Residential', 'Commercial'])->default('Residential')->comment('Property type');
+            $table->enum('status', ['Available', 'Rented', 'Sold', 'Pending'])->default('Available')->comment('Current status');
+
+            // Financial / Size info
+            $table->decimal('price', 15, 2)->nullable()->comment('Property price in local currency');
+            $table->integer('bedrooms')->nullable();
+            $table->integer('bathrooms')->nullable();
+            $table->integer('size')->nullable()->comment('Size in square meters');
+            $table->string('unit_measurement')->default('sqm')->comment('Unit of size, e.g., sqm, sqft');
+
+            // Relationships
+            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->comment('Property owner');
+
+            // Media & extra
+            $table->string('main_image')->nullable()->comment('Main featured image');
+            $table->json('gallery')->nullable()->comment('Additional images in JSON format');
+            $table->string('room_360_image')->nullable()->comment('360° room image path');
+
+            // Optional notes
+            $table->text('description')->nullable()->comment('Detailed property description');
+            $table->text('amenities')->nullable()->comment('Comma-separated list or JSON of amenities');
+
+            // Timestamps
             $table->timestamps();
         });
     }

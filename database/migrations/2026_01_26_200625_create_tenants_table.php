@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('employment')->nullable();
             $table->foreignId('unit_id')->nullable()->constrained('units')->nullOnDelete();
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->boolean('profile_complete')->default(false);
             $table->timestamps();
         });
     }

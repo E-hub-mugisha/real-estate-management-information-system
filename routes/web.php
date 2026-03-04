@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\TenantRequestController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
 
 // ADMIN / MANAGER ROUTES
 Route::middleware(['auth'])->group(function () {
-    Route::resource('properties', PropertyController::class)->except(['create', 'edit']);
+    Route::resource('properties', PropertyController::class);
     Route::get('/properties/{property}', [PropertyController::class, 'show'])
     ->name('properties.show');
 
@@ -59,6 +60,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/export/excel', [ReportController::class, 'exportExcel'])->name('reports.exportExcel');
     Route::get('reports/export/pdf', [ReportController::class, 'exportPDF'])->name('reports.exportPDF');
+
+    Route::resource('requests', TenantRequestController::class)->except(['create', 'edit', 'show', 'store']);
+    Route::get('requests/{requests}', [TenantRequestController::class, 'show'])
+        ->name('requests.show');
+
+    Route::patch('requests/{requests}/update-status', [TenantRequestController::class, 'updateStatus'])
+        ->name('requests.updateStatus');
+
+    Route::post('requests/{requests}/response', [TenantRequestController::class, 'response'])
+        ->name('requests.response');
+        Route::get('/inquiries/create', [PropertyController::class, 'createInquiry'])->name('inquiries.create');
+Route::post('/inquiries', [PropertyController::class, 'storeInquiry'])->name('inquiries.store');
+    Route::get('/tenant/profile', [TenantController::class, 'editTenantProfile'])->name('tenants.profile');
+    Route::post('/tenant/profile', [TenantController::class, 'updateTenantProfile'])->name('tenant.profile.update');
 });
 
 // ADMIN-ONLY
