@@ -12,7 +12,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h6>Total Units</h6>
+                    <h6>Total Property</h6>
                     <h3>{{ $totalUnits }}</h3>
                 </div>
             </div>
@@ -21,7 +21,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h6>Occupied Units</h6>
+                    <h6>Occupied Property</h6>
                     <h3 class="text-success">{{ $occupiedUnits }}</h3>
                 </div>
             </div>
@@ -30,7 +30,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h6>Vacant Units</h6>
+                    <h6>Vacant Property</h6>
                     <h3 class="text-danger">{{ $vacantUnits }}</h3>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     <tr>
                         <th>#</th>
                         <th>Tenant</th>
-                        <th>Unit</th>
+                        <th>Property</th>
                         <th>Issue</th>
                         <th>Priority</th>
                         <th>Status</th>
@@ -99,7 +99,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $req->tenant->user->name }}</td>
-                        <td>{{ $req->unit->unit_number }} - {{ $req->unit->property->name }}</td>
+                        <td>{{ $req->unit->property->name }}</td>
                         <td>{{ $req->title }}</td>
                         <td>
                             <span class="badge bg-warning">{{ $req->priority }}</span>

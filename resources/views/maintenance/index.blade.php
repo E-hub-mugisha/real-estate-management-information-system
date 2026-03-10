@@ -27,7 +27,7 @@
                     <tr>
                         <th>#</th>
                         <th>Tenant</th>
-                        <th>Unit</th>
+                        <th>Property</th>
                         <th>Issue</th>
                         <th>Priority</th>
                         <th>Status</th>
@@ -39,7 +39,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $req->tenant->user->name }}</td>
-                        <td>{{ $req->unit->unit_number }} - {{ $req->unit->property->name }}</td>
+                        <td>{{ $req->unit->property->name }}</td>
                         <td>{{ $req->title }}</td>
                         <td>
                             <span class="badge bg-warning">{{ $req->priority }}</span>

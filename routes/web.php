@@ -70,10 +70,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('requests/{requests}/response', [TenantRequestController::class, 'response'])
         ->name('requests.response');
-    Route::get('/inquiries', [PropertyController::class, 'indexInquiry'])
-        ->name('inquiries.index');
+
+    // Move create BEFORE the {inquiry} show route
     Route::get('/inquiries/create', [PropertyController::class, 'createInquiry'])->name('inquiries.create');
+    Route::get('/inquiries', [PropertyController::class, 'indexInquiry'])->name('inquiries.index');
+    Route::get('/inquiries/{inquiry}', [PropertyController::class, 'showInquiry'])->name('inquiries.show');
     Route::post('/inquiries', [PropertyController::class, 'storeInquiry'])->name('inquiries.store');
+    Route::delete('/inquiries/{inquiry}', [PropertyController::class, 'destroyInquiry'])->name('inquiries.destroy');
+    Route::patch('inquiries/{inquiry}/status', [PropertyController::class, 'updateStatus'])->name('admin.inquiries.updateStatus');
+
     Route::get('/tenant/profile', [TenantController::class, 'editTenantProfile'])->name('tenants.profile');
     Route::post('/tenant/profile', [TenantController::class, 'updateTenantProfile'])->name('tenant.profile.update');
 });

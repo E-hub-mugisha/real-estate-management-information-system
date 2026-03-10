@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inquiry;
+use App\Models\Lease;
 use App\Models\Property;
+use App\Models\Tenant;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -12,9 +15,17 @@ class PropertyController extends Controller
 {
     public function indexInquiry()
     {
-        $inquiries = Inquiry::with(['property', 'tenant.user'])
-            ->latest()
-            ->paginate(10);
+        $user = auth()->user();
+
+        // Admin/Manager sees all, Owner sees only their property inquiries
+        if ($user->role === 'owner') {
+            $inquiries = Inquiry::with(['property', 'tenant.user'])
+                ->whereHas('property', function ($query) use ($user) {
+                    $query->where('owner_id', $user->id);
+                })
+                ->latest()
+                ->paginate(10);
+        }
 
         return view('properties.inquiries-index', compact('inquiries'));
     }
@@ -204,5 +215,74 @@ class PropertyController extends Controller
         $property = Property::findOrFail($request->property_id);
 
         return view('properties.inquiry', compact('property'));
+    }
+    public function showInquiry(Inquiry $inquiry)
+    {
+        $inquiry->load(['property', 'tenant.user']);
+
+        return view('properties.inquiry-show', compact('inquiry'));
+    }
+
+    public function updateStatus(Inquiry $inquiry, Request $request)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+        ]);
+
+        $inquiry->update(['status' => $request->status]);
+
+        if ($request->status === 'approved') {
+            // ✅ Fix: use tenant_id directly from inquiry, not user_id
+            $tenant   = Tenant::find($inquiry->tenant_id);
+            $property = Property::find($inquiry->property_id);
+
+            if ($tenant && $property) {
+                $unit = $property->units()->where('status', 'available')->first();
+
+                if (!$unit) {
+                    $unit = Unit::create([
+                        'property_id'      => $property->id,
+                        'name'             => $property->name . ' - Unit 1',
+                        'floor'            => 1,
+                        'size'             => $property->size,
+                        'unit_measurement' => $property->unit_measurement,
+                        'price'            => $property->price,
+                        'bedrooms'         => $property->bedrooms,
+                        'bathrooms'        => $property->bathrooms,
+                        'status'           => 'available',
+                        'description'      => $property->description,
+                    ]);
+                }
+
+                $tenant->update([
+                    'unit_id' => $unit->id,
+                    'status'  => 'active',
+                ]);
+
+                $unit->update(['status' => 'occupied']);
+
+                Lease::create([
+                    'tenant_id'   => $tenant->id,
+                    'unit_id'     => $unit->id,
+                    'start_date'  => now(),
+                    'end_date'    => now()->addYear(),
+                    'rent_amount' => $unit->price ?? $property->price,
+                    'status'      => 'active',
+                ]);
+
+                return back()->with('success', 'Inquiry approved, lease created and tenant assigned successfully.');
+            }
+
+            return back()->with('warning', 'Inquiry approved but tenant profile not found.');
+        }
+
+        return back()->with('success', 'Inquiry status updated.');
+    }
+
+    public function destroyInquiry(Inquiry $inquiry)
+    {
+        $inquiry->delete();
+
+        return back()->with('success', 'Inquiry deleted successfully.');
     }
 }

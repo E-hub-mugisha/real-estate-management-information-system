@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold">Tenant Management</h4>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTenantModal">
-            + Onboard Tenant
+            + Create Tenant
         </button>
     </div>
 
@@ -26,7 +26,7 @@
                         <th>Tenant Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Unit</th>
+                        <th>Property</th>
                         <th>Status</th>
                         <th width="180">Actions</th>
                     </tr>
@@ -40,7 +40,7 @@
                         <td>{{ $tenant->phone }}</td>
                         <td>
                             {{ $tenant->unit
-                                ? $tenant->unit->unit_number.' - '.$tenant->unit->property->name
+                                ? $tenant->unit->property->name
                                 : 'Not Assigned' }}
                         </td>
                         <td>
@@ -125,19 +125,6 @@
                 </div>
 
                 <div class="mb-2">
-                    <label class="form-label">Unit</label>
-                    <select class="form-control" name="unit_id">
-                        <option value="">No Unit</option>
-                        @foreach($units as $unit)
-                        <option value="{{ $unit->id }}"
-                            {{ $tenant->unit_id == $unit->id ? 'selected' : '' }}>
-                            {{ $unit->unit_number }} - {{ $unit->property->name }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="mb-2">
                     <label class="form-label">Status</label>
                     <select class="form-control" name="status">
                         <option {{ $tenant->status=='Active'?'selected':'' }}>Active</option>
@@ -188,18 +175,6 @@
                 <div class="mb-2">
                     <label class="form-label">Employment</label>
                     <input class="form-control" name="employment">
-                </div>
-
-                <div class="mb-2">
-                    <label class="form-label">Assign Unit (optional)</label>
-                    <select class="form-control" name="unit_id">
-                        <option value="">Select Unit</option>
-                        @foreach($units as $unit)
-                        <option value="{{ $unit->id }}">
-                            {{ $unit->unit_number }} - {{ $unit->property->name }}
-                        </option>
-                        @endforeach
-                    </select>
                 </div>
             </div>
 

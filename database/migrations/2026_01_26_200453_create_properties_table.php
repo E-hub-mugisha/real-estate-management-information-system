@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('slug')->unique()->comment('URL-friendly slug for SEO');
 
             // Type & Status
-            $table->enum('type', ['Residential', 'Commercial'])->default('Residential')->comment('Property type');
+            $table->string('type', 50)->default('Residential')->comment('Property type');
             $table->enum('status', ['Available', 'Rented', 'Sold', 'Pending'])->default('Available')->comment('Current status');
 
             // Financial / Size info

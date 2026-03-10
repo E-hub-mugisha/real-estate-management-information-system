@@ -44,16 +44,15 @@
         <div class="col-md-4">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-light fw-semibold">
-                    Unit & Property
+                    Property
                 </div>
                 <div class="card-body">
                     @if($tenant->unit)
                     <p><strong>Property:</strong> {{ $tenant->unit->property->name }}</p>
                     <p><strong>Location:</strong> {{ $tenant->unit->property->location }}</p>
-                    <p><strong>Unit:</strong> {{ $tenant->unit->unit_number }}</p>
-                    <p><strong>Rent:</strong> {{ number_format($tenant->unit->rent) }} RWF</p>
+                    <p><strong>Rent:</strong> {{ number_format($tenant->unit->price) }} RWF</p>
                     @else
-                    <p class="text-muted">No unit assigned</p>
+                    <p class="text-muted">No property assigned</p>
                     @endif
                 </div>
             </div>

@@ -23,7 +23,7 @@
                     <tr>
                         <th>#</th>
                         <th>Tenant</th>
-                        <th>Unit</th>
+                        <th>Property</th>
                         <th>Rent</th>
                         <th>Period</th>
                         <th>Status</th>
@@ -35,7 +35,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $lease->tenant->user->name }}</td>
-                        <td>{{ $lease->unit->unit_number }} - {{ $lease->unit->property->name }}</td>
+                        <td>{{ $lease->unit->property->name }}</td>
                         <td>{{ number_format($lease->rent_amount) }} RWF</td>
                         <td>{{ $lease->start_date }} → {{ $lease->end_date }}</td>
                         <td>
@@ -135,7 +135,7 @@
                 </select>
 
                 <select class="form-control mb-2" name="unit_id" required>
-                    <option value="">Select Unit</option>
+                    <option value="">Select Property</option>
                     @foreach($units as $unit)
                     <option value="{{ $unit->id }}">
                         {{ $unit->unit_number }} - {{ $unit->property->name }}

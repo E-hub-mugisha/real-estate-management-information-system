@@ -23,7 +23,7 @@
             @foreach($inquiries as $inquiry)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $inquiry->property->title }}</td>
+                    <td>{{ $inquiry->property->name }}</td>
                     <td>{{ $inquiry->tenant->user->name }}</td>
                     <td>
                         <span class="badge bg-{{ 
@@ -35,10 +35,10 @@
                     </td>
                     <td>{{ $inquiry->created_at->format('d M Y') }}</td>
                     <td>
-                        <a href="{{ route('admin.inquiries.show', $inquiry->id) }}"
+                        <a href="{{ route('inquiries.show', $inquiry->id) }}"
                            class="btn btn-sm btn-primary">View</a>
 
-                        <form action="{{ route('admin.inquiries.destroy', $inquiry->id) }}"
+                        <form action="{{ route('inquiries.destroy', $inquiry->id) }}"
                               method="POST"
                               class="d-inline">
                             @csrf

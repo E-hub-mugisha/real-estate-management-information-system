@@ -95,9 +95,8 @@ class Property extends Model
             }
         });
     }
-public function inquiries()
-{
-    return $this->hasMany(Inquiry::class);
-}
-
+    public function inquiries()
+    {
+        return $this->hasMany(Inquiry::class);
+    }
 }

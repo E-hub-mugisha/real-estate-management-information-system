@@ -44,12 +44,12 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link px-3 {{ request()->routeIs('units.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
                         href="{{ route('units.index') }}">
                         <i class="bi bi-grid me-1"></i> Units
                     </a>
-                </li>
+                </li> -->
 
                 <li class="nav-item">
                     <a class="nav-link px-3 {{ request()->routeIs('tenants.*') ? 'active fw-semibold text-warning' : 'text-white' }}"
@@ -140,6 +140,10 @@
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                        <span class="dropdown-header fw-bold">{{ auth()->user()->name }}</span>
+                        <span class="dropdown-header text-muted">{{ auth()->user()->email }}</span>
+                        <span class="dropdown-header text-muted">{{ ucfirst(auth()->user()->role) }}</span>
+                        <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item" href="{{ route('profile.edit') }}">
                                 <i class="bi bi-gear me-2"></i> Profile

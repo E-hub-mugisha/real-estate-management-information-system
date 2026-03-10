@@ -3,43 +3,54 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $admin = User::create([
             'name' => 'System Admin',
             'email' => 'admin@irems.com',
             'password' => Hash::make('password'),
+            'role' => 'Admin',
         ]);
-        $admin->assignRole('Admin');
 
-        $manager = User::create([
-            'name' => 'Property Manager',
-            'email' => 'manager@irems.com',
-            'password' => Hash::make('password'),
-        ]);
-        $manager->assignRole('Manager');
+        // Owners
+        $owners = [
+            ['name' => 'Uwimana Jean Pierre', 'email' => 'jeanpierre.uwimana@irems.com'],
+            ['name' => 'Mukamana Chantal', 'email' => 'chantal.mukamana@irems.com'],
+            ['name' => 'Habimana Eric', 'email' => 'eric.habimana@irems.com'],
+        ];
 
-        $owner = User::create([
-            'name' => 'Property Owner',
-            'email' => 'owner@irems.com',
-            'password' => Hash::make('password'),
-        ]);
-        $owner->assignRole('Owner');
+        foreach ($owners as $ownerData) {
+            $owner = User::create([
+                'name' => $ownerData['name'],
+                'email' => $ownerData['email'],
+                'password' => Hash::make('password'),
+                'role' => 'Owner',
+            ]);
+        }
 
-        $tenant = User::create([
-            'name' => 'Test Tenant',
-            'email' => 'tenant@irems.com',
-            'password' => Hash::make('password'),
-        ]);
-        $tenant->assignRole('Tenant');
+        // Tenants
+        $tenants = [
+            ['name' => 'Niyonzima Patrick', 'email' => 'patrick.niyonzima@irems.com'],
+            ['name' => 'Uwase Diane', 'email' => 'diane.uwase@irems.com'],
+            ['name' => 'Hakizimana Yves', 'email' => 'yves.hakizimana@irems.com'],
+            ['name' => 'Mukagasana Solange', 'email' => 'solange.mukagasana@irems.com'],
+            ['name' => 'Bizimana Claude', 'email' => 'claude.bizimana@irems.com'],
+            ['name' => 'Nyiransabimana Grace', 'email' => 'grace.nyiransabimana@irems.com'],
+            ['name' => 'Tuyisenge Aimable', 'email' => 'aimable.tuyisenge@irems.com'],
+        ];
+
+        foreach ($tenants as $tenantData) {
+            $tenant = User::create([
+                'name' => $tenantData['name'],
+                'email' => $tenantData['email'],
+                'password' => Hash::make('password'),
+                'role' => 'Tenant',
+            ]);
+        }
     }
 }
