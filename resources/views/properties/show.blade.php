@@ -10,17 +10,6 @@
         {{-- Left Column: Main Image + Gallery --}}
         <div class="col-md-6">
 
-            {{-- Main Image --}}
-            <!-- @if($property->main_image)
-                <img src="{{ asset('storage/' . $property->main_image) }}" 
-                     class="img-fluid rounded shadow-sm mb-3" 
-                     alt="{{ $property->name }}">
-            @else
-                <img src="{{ asset('images/property-default.png') }}" 
-                     class="img-fluid rounded shadow-sm mb-3" 
-                     alt="No image">
-            @endif -->
-
             {{-- Gallery Carousel --}}
             @if($property->gallery && count($property->gallery) > 0)
             <div id="propertyGalleryCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -50,6 +39,14 @@
                 </button>
             </div>
             @endif
+
+            {{-- 360 Viewer --}}
+        @if($property->room_360_image)
+        <div class="mt-4">
+            <h5>360° Room View:</h5>
+            <div id="viewer" style="width:100%; height:450px;"></div>
+        </div>
+        @endif
         </div>
 
         {{-- Right Column: Property Details --}}
@@ -94,10 +91,8 @@
             @if($property->amenities)
             <p>
                 <strong>Amenities:</strong>
-                @foreach(($property->amenities ?? []) as $amenity)
-                <span class="badge bg-secondary me-1">
-                    {{ trim($amenity) }}
-                </span>
+                @foreach(is_array($property->amenities) ? $property->amenities : json_decode($property->amenities, true) ?? [] as $amenity)
+                <span class="badge bg-secondary me-1">{{ trim($amenity) }}</span>
                 @endforeach
             </p>
             @endif
@@ -153,14 +148,6 @@
             </div>
             @endif
         </div>
-
-        {{-- 360 Viewer --}}
-        @if($property->room_360_image)
-        <div class="col-md-12 mt-4">
-            <h5>360° Room View:</h5>
-            <div id="viewer" style="width:100%; height:450px;"></div>
-        </div>
-        @endif
 
     </div>
 </div>

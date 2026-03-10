@@ -120,7 +120,7 @@
                     <div class="mb-3">
                         <label class="form-label">Amenities</label>
                         <input type="text" name="amenities" class="form-control"
-                            value="{{ old('amenities', $property->amenities) }}">
+    value="{{ old('amenities', is_array($property->amenities) ? implode(', ', $property->amenities) : $property->amenities) }}">
                     </div>
 
                     {{-- Images --}}
