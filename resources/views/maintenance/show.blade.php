@@ -4,7 +4,7 @@
 <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold">Maintenance Request Details</h4>
+        <h4 class="fw-bold">Request Details</h4>
         <a href="{{ route('maintenance.index') }}" class="btn btn-secondary btn-sm">← Back</a>
     </div>
 
@@ -42,7 +42,6 @@
                     <p><strong>Tenant:</strong> {{ $maintenance->tenant->user->name }}</p>
                     <p><strong>Phone:</strong> {{ $maintenance->tenant->phone }}</p>
                     <p><strong>Property:</strong> {{ $maintenance->unit->property->name }}</p>
-                    <p><strong>Unit:</strong> {{ $maintenance->unit->unit_number }}</p>
                 </div>
             </div>
         </div>

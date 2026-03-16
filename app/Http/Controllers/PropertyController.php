@@ -14,21 +14,21 @@ use Illuminate\Support\Str;
 class PropertyController extends Controller
 {
     public function indexInquiry()
-    {
-        $user = auth()->user();
+{
+    $user = auth()->user();
 
-        // Admin/Manager sees all, Owner sees only their property inquiries
-        if ($user->role === 'owner') {
-            $inquiries = Inquiry::with(['property', 'tenant.user'])
-                ->whereHas('property', function ($query) use ($user) {
-                    $query->where('owner_id', $user->id);
-                })
-                ->latest()
-                ->paginate(10);
-        }
+    $query = Inquiry::with(['property', 'tenant.user']);
 
-        return view('properties.inquiries-index', compact('inquiries'));
+    if ($user->role === 'owner') {
+        $query->whereHas('property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        });
     }
+
+    $inquiries = $query->latest()->paginate(10);
+
+    return view('properties.inquiries-index', compact('inquiries'));
+}
     public function index()
     {
         $user = auth()->user();
@@ -50,7 +50,7 @@ class PropertyController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
-            'type' => 'required|in:Residential,Commercial',
+            'type' => 'required|string',
             'status' => 'required|in:Available,Rented,Sold,Pending',
             'price' => 'nullable|numeric|min:0',
             'bedrooms' => 'nullable|integer|min:0',
@@ -110,7 +110,7 @@ class PropertyController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
-            'type' => 'required|in:Residential,Commercial',
+            'type' => 'required|string',
             'status' => 'required|in:Available,Rented,Sold,Pending',
             'price' => 'nullable|numeric|min:0',
             'bedrooms' => 'nullable|integer|min:0',

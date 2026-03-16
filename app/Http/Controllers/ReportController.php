@@ -84,10 +84,102 @@ class ReportController extends Controller
     }
 
     // Export PDF
-    public function exportPDF(Request $request)
+    public function exportPdf(Request $request)
     {
-        $payments = Payment::with('lease.tenant.user','lease.unit.property')->get();
-        $pdf = Pdf::loadView('reports.pdf', compact('payments'));
-        return $pdf->download('payments.pdf');
+        $user = auth()->user();
+
+        $from = $request->from_date;
+        $to = $request->to_date;
+
+        // Fetch leases based on role
+        $leases = Lease::with(['tenant.user','unit.property','payments'])
+            ->when($user->role !== 'admin', function($query) use ($user) {
+                if ($user->role == 'tenant') {
+                    $query->whereHas('tenant', fn($q) => $q->where('user_id', $user->id));
+                }
+                if ($user->role == 'owner') {
+                    $query->whereHas('unit.property', fn($q) => $q->where('owner_id', $user->id));
+                }
+            })
+            ->when($from && $to, fn($q) => $q->whereBetween('created_at', [$from, $to]))
+            ->get();
+
+        // Payments
+        $payments = Payment::whereIn('lease_id', $leases->pluck('id'))->get();
+
+        // Total payments
+        $totalPayments = $payments->sum('amount');
+
+        // Overdue leases
+        $overdueLeases = $leases->where('end_date', '<', now()->format('Y-m-d'))->where('status', '!=', 'Completed');
+
+        // Maintenance summary
+        $maintenance = MaintenanceRequest::with(['tenant.user','unit.property'])
+            ->when($user->role !== 'admin', function($query) use ($user) {
+                if ($user->role == 'tenant') {
+                    $query->whereHas('tenant', fn($q) => $q->where('user_id', $user->id));
+                }
+                if ($user->role == 'owner') {
+                    $query->whereHas('unit.property', fn($q) => $q->where('owner_id', $user->id));
+                }
+            })
+            ->when($from && $to, fn($q) => $q->whereBetween('created_at', [$from, $to]))
+            ->get();
+
+        $data = [
+            'leases' => $leases,
+            'payments' => $payments,
+            'totalPayments' => $totalPayments,
+            'overdueLeases' => $overdueLeases,
+            'maintenance' => $maintenance,
+            'from' => $from,
+            'to' => $to
+        ];
+
+        $pdf = PDF::loadView('reports.pdf', $data);
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download('real_estate_report.pdf');
+    }
+
+    public function generate(Request $request)
+    {
+        $user = auth()->user();
+
+        // Filters
+        $from = $request->from_date;
+        $to = $request->to_date;
+
+        // Fetch leases based on role
+        $leases = Lease::with(['tenant.user', 'unit.property', 'payments'])
+            ->when($user->role !== 'admin', function($query) use ($user) {
+                if ($user->role == 'tenant') {
+                    $query->whereHas('tenant', fn($q) => $q->where('user_id', $user->id));
+                }
+
+                if ($user->role == 'owner') {
+                    $query->whereHas('unit.property', fn($q) => $q->where('owner_id', $user->id));
+                }
+            })
+            ->when($from && $to, fn($q) => $q->whereBetween('created_at', [$from, $to]))
+            ->get();
+
+        // Fetch payments based on leases
+        $payments = Payment::whereIn('lease_id', $leases->pluck('id'))->get();
+
+        // Optional: Maintenance requests
+        $maintenance = MaintenanceRequest::with(['tenant.user','unit.property'])
+            ->when($user->role !== 'admin', function($query) use ($user) {
+                if ($user->role == 'tenant') {
+                    $query->whereHas('tenant', fn($q) => $q->where('user_id', $user->id));
+                }
+                if ($user->role == 'owner') {
+                    $query->whereHas('unit.property', fn($q) => $q->where('owner_id', $user->id));
+                }
+            })
+            ->when($from && $to, fn($q) => $q->whereBetween('created_at', [$from, $to]))
+            ->get();
+
+        return view('reports.generate', compact('leases', 'payments', 'maintenance', 'from', 'to'));
     }
 }

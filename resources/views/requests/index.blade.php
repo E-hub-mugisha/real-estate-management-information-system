@@ -27,7 +27,7 @@
                     <tr>
                         <th>#</th>
                         <th>Tenant</th>
-                        <th>Unit</th>
+                        <th>Property</th>
                         <th>Issue</th>
                         <th>Priority</th>
                         <th>Status</th>
@@ -39,7 +39,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $req->tenant->user->name }}</td>
-                        <td>{{ $req->unit->unit_number }} - {{ $req->unit->property->name }}</td>
+                        <td>{{ $req->unit->property->name }}</td>
                         <td>{{ $req->title }}</td>
                         <td>
                             <span class="badge bg-warning">{{ $req->priority }}</span>
@@ -121,19 +121,22 @@
                 <input type="hidden" name="tenant_id" value="{{ auth()->user()->tenant->id }}">
                 <input type="hidden" name="unit_id" value="{{ auth()->user()->tenant->unit->id ?? 1 }}">
 
+                <label>Title</label>
                 <input type="text" class="form-control mb-2"
                     name="title"
                     placeholder="title" required>
                 <div class="mb-3">
+                    <label>Description</label>
                     <textarea name="description" class="form-control" rows="3"
                         placeholder="Write description to tenant..."></textarea>
                 </div>
+                <label>Priority</label>
                 <select class="form-control mb-2" name="priority">
                     <option value="Low">Low</option>
                     <option value="Medium" selected>Medium</option>
                     <option value="High">High</option>
                 </select>
-
+                <label>Status</label>
                 <select class="form-control" name="status">
                     <option value="Pending">Pending</option>
                     <option value="In Progress">In Progress</option>

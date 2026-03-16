@@ -54,8 +54,7 @@
                     <div class="mb-3">
                         <label class="form-label">Property Type</label>
                         <select name="type" class="form-select" required>
-                            <option value="Residential" {{ old('type') == 'Residential' ? 'selected' : '' }}>Residential</option>
-                            <option value="Commercial" {{ old('type') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
+                            <option value="apartment" {{ old('type') == 'apartment' ? 'selected' : '' }}>apartment</option>
                         </select>
                     </div>
 

@@ -46,8 +46,7 @@
                         <div class="col">
                             <label class="form-label">Type</label>
                             <select name="type" class="form-select" required>
-                                <option value="Residential" {{ $property->type == 'Residential' ? 'selected' : '' }}>Residential</option>
-                                <option value="Commercial" {{ $property->type == 'Commercial' ? 'selected' : '' }}>Commercial</option>
+                                <option value="Apartment" {{ $property->type == 'Apartment' ? 'selected' : '' }}>Apartment</option>
                             </select>
                         </div>
                         <div class="col">

@@ -4,7 +4,7 @@
 <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold">Maintenance Request Details</h4>
+        <h4 class="fw-bold">Request Details</h4>
         <a href="{{ route('maintenance.index') }}" class="btn btn-secondary btn-sm">← Back</a>
     </div>
 
@@ -37,12 +37,11 @@
         <!-- Tenant & Unit Info -->
         <div class="col-md-6">
             <div class="card shadow-sm border-0">
-                <div class="card-header fw-semibold bg-light">Tenant & Unit</div>
+                <div class="card-header fw-semibold bg-light">Tenant & Property</div>
                 <div class="card-body">
                     <p><strong>Tenant:</strong> {{ $maintenance->tenant->user->name }}</p>
                     <p><strong>Phone:</strong> {{ $maintenance->tenant->phone }}</p>
                     <p><strong>Property:</strong> {{ $maintenance->unit->property->name }}</p>
-                    <p><strong>Unit:</strong> {{ $maintenance->unit->unit_number }}</p>
                 </div>
             </div>
         </div>
@@ -50,7 +49,7 @@
         <!-- Admin Response -->
         <div class="col-md-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header fw-semibold bg-light">Admin / Manager Response</div>
+                <div class="card-header fw-semibold bg-light">Response</div>
                 <div class="card-body">
 
                     @if($maintenance->response)

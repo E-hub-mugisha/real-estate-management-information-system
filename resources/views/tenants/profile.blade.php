@@ -95,11 +95,11 @@
                         @if(auth()->user()->tenant && auth()->user()->tenant->unit)
                             <div class="mb-4">
                                 <label class="form-label fw-semibold">
-                                    Assigned Unit
+                                    Assigned Property
                                 </label>
                                 <input type="text"
                                        class="form-control form-control-lg bg-light"
-                                       value="{{ auth()->user()->tenant->unit->name }} - {{ auth()->user()->tenant->unit->property->name ?? '' }}"
+                                       value="{{ auth()->user()->tenant->unit->name }}"
                                        readonly>
                             </div>
                         @endif

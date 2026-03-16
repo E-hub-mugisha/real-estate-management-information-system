@@ -11,7 +11,7 @@ class TenantRequestController extends Controller
     {
         $user = auth()->user();
 
-        // Check if tenant exists AND profile is complete
+        // Ensure tenant profile exists and is complete
         if (!$user->tenant || !$user->tenant->profile_complete) {
             return redirect()
                 ->route('tenants.profile')
@@ -19,6 +19,7 @@ class TenantRequestController extends Controller
         }
 
         $requests = MaintenanceRequest::with(['tenant.user', 'unit.property'])
+            ->where('tenant_id', $user->tenant->id)
             ->latest()
             ->get();
 
@@ -73,13 +74,13 @@ class TenantRequestController extends Controller
             'response' => $request->response
         ]);
 
-        return back()->with('success', 'Response sent to tenant');
+        return back()->with('success', 'Response sent to tenant.');
     }
 
     public function updateStatus(Request $request, MaintenanceRequest $maintenance)
     {
         $request->validate([
-            'status' => 'required|in:Pending,In Progress,Resolved'
+            'status' => 'required|string'
         ]);
 
         $maintenance->update([
@@ -87,7 +88,7 @@ class TenantRequestController extends Controller
             'resolved_at' => $request->status === 'Resolved' ? now() : null
         ]);
 
-        return back()->with('success', 'Status updated successfully');
+        return back()->with('success', 'Status updated successfully.');
     }
     public function show(MaintenanceRequest $maintenance)
     {

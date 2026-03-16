@@ -37,11 +37,9 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make('password'), // default password
+            'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
-
-        $user->assignRole($request->role);
 
         return redirect()->route('users.index')
             ->with('success', 'User created successfully');
@@ -62,7 +60,6 @@ class UserController extends Controller
         ]);
 
         $user->update($request->only('name', 'email'));
-        $user->syncRoles($request->role);
 
         return redirect()->route('users.index')
             ->with('success', 'User updated successfully');

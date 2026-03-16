@@ -55,20 +55,22 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('maintenance/{maintenance}/update-status', [MaintenanceRequestController::class, 'updateStatus'])
         ->name('maintenance.updateStatus');
 
-    Route::post('maintenance/{maintenance}/response', [MaintenanceRequestController::class, 'response'])
+    Route::post('maintenance/response/{maintenance}', [MaintenanceRequestController::class, 'response'])
         ->name('maintenance.response');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/export/excel', [ReportController::class, 'exportExcel'])->name('reports.exportExcel');
     Route::get('reports/export/pdf', [ReportController::class, 'exportPDF'])->name('reports.exportPDF');
+    Route::get('reports/pdf', [ReportController::class, 'exportPdf'])->name('reports.pdf');
+    Route::get('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
 
     Route::resource('requests', TenantRequestController::class)->except(['create', 'edit', 'show', 'store']);
-    Route::get('requests/{requests}', [TenantRequestController::class, 'show'])
+    Route::get('requests/{maintenance}', [TenantRequestController::class, 'show'])
         ->name('requests.show');
 
-    Route::patch('requests/{requests}/update-status', [TenantRequestController::class, 'updateStatus'])
+    Route::patch('requests/{maintenance}/update-status', [TenantRequestController::class, 'updateStatus'])
         ->name('requests.updateStatus');
 
-    Route::post('requests/{requests}/response', [TenantRequestController::class, 'response'])
+    Route::post('requests/{maintenance}/response', [TenantRequestController::class, 'response'])
         ->name('requests.response');
 
     // Move create BEFORE the {inquiry} show route

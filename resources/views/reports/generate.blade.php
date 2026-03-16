@@ -1,25 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Real Estate Report</title>
-    <style>
-        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #000; padding: 5px; text-align: left; }
-        th { background-color: #f0f0f0; }
-        h4, h5 { margin-bottom: 5px; }
-    </style>
-</head>
-<body>
-    <h4>Real Estate Report</h4>
-    @if($from && $to)
-        <p>Period: {{ $from }} - {{ $to }}</p>
-    @endif
+@extends('layouts.app')
 
+@section('content')
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h4>Report @if($from && $to) ({{ $from }} - {{ $to }}) @endif</h4>
+        <a href="{{ route('reports.pdf', ['from_date' => request('from_date'), 'to_date' => request('to_date')]) }}"
+            class="btn btn-danger">
+            <i class="bi bi-file-earmark-pdf"></i> Download PDF
+        </a>
+
+    </div>
     <!-- Leases -->
-    <h5>Leases</h5>
-    <table>
+    <h5 class="mt-4">Leases</h5>
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Tenant</th>
@@ -44,35 +39,9 @@
         </tbody>
     </table>
 
-    <!-- Overdue leases -->
-    <h5>Overdue Leases</h5>
-    <table>
-        <thead>
-            <tr>
-                <th>Tenant</th>
-                <th>Property</th>
-                <th>Unit</th>
-                <th>End Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($overdueLeases as $lease)
-            <tr>
-                <td>{{ $lease->tenant->user->name ?? 'N/A' }}</td>
-                <td>{{ $lease->unit->property->name ?? 'N/A' }}</td>
-                <td>{{ $lease->unit->name ?? 'N/A' }}</td>
-                <td>{{ $lease->end_date }}</td>
-                <td>{{ $lease->status }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-
     <!-- Payments -->
-    <h5>Payments</h5>
-    <p>Total Payments: {{ number_format($totalPayments, 2) }}</p>
-    <table>
+    <h5 class="mt-4">Payments</h5>
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Lease ID</th>
@@ -85,7 +54,7 @@
             @foreach($payments as $payment)
             <tr>
                 <td>{{ $payment->lease_id }}</td>
-                <td>{{ number_format($payment->amount, 2) }}</td>
+                <td>{{ $payment->amount }}</td>
                 <td>{{ $payment->payment_date }}</td>
                 <td>{{ $payment->status }}</td>
             </tr>
@@ -93,9 +62,9 @@
         </tbody>
     </table>
 
-    <!-- Maintenance Summary -->
-    <h5>Maintenance Requests</h5>
-    <table>
+    <!-- Maintenance -->
+    <h5 class="mt-4">Maintenance Requests</h5>
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Tenant</th>
@@ -118,5 +87,5 @@
         </tbody>
     </table>
 
-</body>
-</html>
+</div>
+@endsection

@@ -87,18 +87,19 @@
             </div>
 
             <div class="modal-body">
+                <label>Rent Amount</label>
                 <input class="form-control mb-2"
                     name="rent_amount"
                     value="{{ $lease->rent_amount }}">
-
+                <label>Start Date</label>
                 <input type="date" class="form-control mb-2"
                     name="start_date"
                     value="{{ $lease->start_date }}">
-
+                <label>End Date</label>
                 <input type="date" class="form-control mb-2"
                     name="end_date"
                     value="{{ $lease->end_date }}">
-
+                <label>Status</label>
                 <select class="form-control" name="status">
                     <option {{ $lease->status=='Active'?'selected':'' }}>Active</option>
                     <option {{ $lease->status=='Expired'?'selected':'' }}>Expired</option>

@@ -14,60 +14,119 @@ use Illuminate\Support\Facades\Request;
 class DashboardController extends Controller
 {
     public function index()
-    {
-        $user = auth()->user();
+{
+    $user = auth()->user();
 
-        if ($user->role === 'tenant') {
+    $totalProperties = 0;
+    $totalUnits = 0;
+    $totalRevenue = 0;
+    $pendingMaintenance = 0;
+    $leasesCount = 0;
 
-            if (!$user->tenant || $user->tenant->profile_complete === false) {
-                return redirect()
-                    ->route('tenants.profile')
-                    ->with('warning', 'Please complete your profile to access the dashboard');
-            }
-        }
+    $payments = [];
+    $occupancy = [];
+    $maintenance = [];
 
+    // ================= ADMIN =================
+    if ($user->role === 'admin') {
+
+        $totalProperties = Property::count();
         $totalUnits = Unit::count();
-
-        $occupiedUnits = Unit::whereHas('leases', function ($q) {
-            $q->where('end_date', '>=', now());
-        })->count();
-
-        $vacantUnits = $totalUnits - $occupiedUnits;
-
         $totalRevenue = Payment::sum('amount');
-        $pendingMaintenance = MaintenanceRequest::where('status', 'Pending')->count();
+        $pendingMaintenance = MaintenanceRequest::where('status','Pending')->count();
 
-        // Monthly Analytics (Current Year)
         $payments = Payment::whereYear('created_at', now()->year)
-            ->selectRaw('MONTH(created_at) as month, SUM(amount) as total')
+            ->selectRaw('MONTH(created_at) month, SUM(amount) total')
             ->groupBy('month')
-            ->pluck('total', 'month')
+            ->pluck('total','month')
             ->toArray();
 
         $occupancy = Lease::whereYear('start_date', now()->year)
-            ->selectRaw('MONTH(start_date) as month, COUNT(*) as total')
+            ->selectRaw('MONTH(start_date) month, COUNT(*) total')
             ->groupBy('month')
-            ->pluck('total', 'month')
+            ->pluck('total','month')
             ->toArray();
 
         $maintenance = MaintenanceRequest::whereYear('created_at', now()->year)
-            ->selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+            ->selectRaw('MONTH(created_at) month, COUNT(*) total')
             ->groupBy('month')
-            ->pluck('total', 'month')
+            ->pluck('total','month')
             ->toArray();
-
-        $requests = MaintenanceRequest::with(['tenant.user', 'unit.property'])->latest()->get();
-
-        return view('dashboard', compact(
-            'totalUnits',
-            'occupiedUnits',
-            'vacantUnits',
-            'totalRevenue',
-            'pendingMaintenance',
-            'payments',
-            'occupancy',
-            'maintenance',
-            'requests'
-        ));
     }
+
+    // ================= OWNER =================
+    elseif ($user->role === 'owner') {
+
+        $totalProperties = $user->properties()->count();
+
+        $totalUnits = Unit::whereHas('property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })->count();
+
+        $totalRevenue = Payment::whereHas('lease.unit.property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })->sum('amount');
+
+        $pendingMaintenance = MaintenanceRequest::whereHas('unit.property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })
+        ->where('status','Pending')
+        ->count();
+
+        $payments = Payment::whereHas('lease.unit.property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })
+        ->whereYear('created_at', now()->year)
+        ->selectRaw('MONTH(created_at) month, SUM(amount) total')
+        ->groupBy('month')
+        ->pluck('total','month')
+        ->toArray();
+
+        $occupancy = Lease::whereHas('unit.property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })
+        ->whereYear('start_date', now()->year)
+        ->selectRaw('MONTH(start_date) month, COUNT(*) total')
+        ->groupBy('month')
+        ->pluck('total','month')
+        ->toArray();
+
+        $maintenance = MaintenanceRequest::whereHas('unit.property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })
+        ->whereYear('created_at', now()->year)
+        ->selectRaw('MONTH(created_at) month, COUNT(*) total')
+        ->groupBy('month')
+        ->pluck('total','month')
+        ->toArray();
+    }
+
+    // ================= TENANT =================
+    elseif ($user->role === 'tenant') {
+
+        $tenant = $user->tenant;
+
+        if($tenant){
+
+            $leasesCount = $tenant->leases()->count();
+
+            $totalRevenue = $tenant->payments()->sum('amount');
+
+            $pendingMaintenance = $tenant->maintenanceRequests()
+                ->where('status','Pending')
+                ->count();
+        }
+    }
+
+    return view('dashboard', compact(
+        'totalProperties',
+        'totalUnits',
+        'totalRevenue',
+        'pendingMaintenance',
+        'leasesCount',
+        'payments',
+        'occupancy',
+        'maintenance'
+    ));
+}
 }

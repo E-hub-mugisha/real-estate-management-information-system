@@ -8,6 +8,16 @@
             + Add User
         </button>
     </div>
+    <!-- error -->
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
     <table class="table table-bordered align-middle">
         <thead>
@@ -31,27 +41,55 @@
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-warning"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editUserModal{{ $user->id }}">
-                        Edit
-                    </button>
-
-                    <a href="{{ route('roles_permissions.index') }}?user_id={{ $user->id }}"
-                        class="btn btn-sm btn-warning">Manage Permissions</a>
-
-                    <form action="{{ route('users.toggleStatus', $user) }}" method="POST" class="d-inline">
-                        @csrf @method('PATCH')
-                        <button class="btn btn-sm btn-secondary">Toggle</button>
-                    </form>
-
-                    <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline">
-                        @csrf @method('DELETE')
-                        <button class="btn btn-sm btn-danger"
-                            onclick="return confirm('Delete this user?')">
-                            Delete
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Actions
                         </button>
-                    </form>
+
+                        <ul class="dropdown-menu">
+
+                            <li>
+                                <button class="dropdown-item"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editUserModal{{ $user->id }}">
+                                    Edit
+                                </button>
+                            </li>
+
+                            <!-- <li>
+                                <a class="dropdown-item"
+                                    href="{{ route('roles_permissions.index') }}?user_id={{ $user->id }}">
+                                    Manage Permissions
+                                </a>
+                            </li> -->
+
+                            <li>
+                                <form action="{{ route('users.toggleStatus', $user) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="dropdown-item">
+                                        Toggle Status
+                                    </button>
+                                </form>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <form action="{{ route('users.destroy', $user) }}" method="POST"
+                                    onsubmit="return confirm('Delete this user?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </li>
+
+                        </ul>
+                    </div>
                 </td>
             </tr>
 
@@ -81,12 +119,13 @@
                     value="{{ $user->email }}" required>
 
                 <select name="role" class="form-control">
-                    @foreach($roles as $role)
-                    <option value="{{ $role->name }}"
-                        {{ $user->hasRole($role->name) ? 'selected' : '' }}>
-                        {{ $role->name }}
+                    <option value="{{ $user->role }}"
+                        {{ $user->role ? 'selected' : '' }}>
+                        {{ $user->role ?? 'No Role' }}
                     </option>
-                    @endforeach
+                    <option value="owner">Owner</option>
+                    <option value="admin">Admin</option>
+                    <option value="tenant">Tenant</option>
                 </select>
             </div>
 
@@ -117,10 +156,52 @@
 
                 <select name="role" class="form-control" required>
                     <option value="">Select Role</option>
-                    @foreach($roles as $role)
-                    <option value="{{ $role->name }}">{{ $role->name }}</option>
-                    @endforeach
+                    <option value="owner">Owner</option>
+                    <option value="admin">Admin</option>
+                    <option value="tenant">Tenant</option>
                 </select>
+                <!-- password -->
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="position-relative">
+                        <input type="password" name="password" id="passwordField"
+                            class="form-control pe-5" required>
+
+                        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3"
+                            id="togglePassword"
+                            style="font-size: 1.2rem; cursor: pointer; color: #6c757d;"></i>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <div class="position-relative">
+                        <input type="password" name="password_confirmation" id="passwordConfirmationField"
+                            class="form-control pe-5" required>
+
+                        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3"
+                            id="toggleConfirmationPassword"
+                            style="font-size: 1.2rem; cursor: pointer; color: #6c757d;"></i>
+                    </div>
+                </div>
+
+                <script>
+                    function togglePasswordVisibility(toggleId, fieldId) {
+                        const toggleIcon = document.getElementById(toggleId);
+                        const passwordField = document.getElementById(fieldId);
+
+                        toggleIcon.addEventListener('click', function() {
+                            const type = passwordField.type === 'password' ? 'text' : 'password';
+                            passwordField.type = type;
+
+                            this.classList.toggle('bi-eye');
+                            this.classList.toggle('bi-eye-slash');
+                        });
+                    }
+
+                    togglePasswordVisibility('togglePassword', 'passwordField');
+                    togglePasswordVisibility('toggleConfirmationPassword', 'passwordConfirmationField');
+                </script>
             </div>
 
             <div class="modal-footer">

@@ -10,13 +10,28 @@ use Illuminate\Http\Request;
 class LeaseController extends Controller
 {
     public function index()
-    {
-        $leases = Lease::with(['tenant.user','unit.property'])->get();
-        $tenants = Tenant::where('status','Active')->get();
-        $units = Unit::all();
+{
+    $user = auth()->user();
 
-        return view('leases.index', compact('leases','tenants','units'));
-    }
+    $leases = Lease::with(['tenant.user','unit.property'])
+        ->when($user->role !== 'admin', function ($query) use ($user) {
+
+            if ($user->role == 'tenant') {
+                $query->whereHas('tenant', fn($q) => $q->where('user_id',$user->id));
+            }
+
+            if ($user->role == 'owner') {
+                $query->whereHas('unit.property', fn($q) => $q->where('owner_id',$user->id));
+            }
+
+        })
+        ->get();
+
+    $tenants = Tenant::where('status','Active')->get();
+    $units = Unit::all();
+
+    return view('leases.index', compact('leases','tenants','units'));
+}
 
     public function store(Request $request)
     {
