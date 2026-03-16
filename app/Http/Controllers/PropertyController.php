@@ -14,21 +14,21 @@ use Illuminate\Support\Str;
 class PropertyController extends Controller
 {
     public function indexInquiry()
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    $query = Inquiry::with(['property', 'tenant.user']);
+        $query = Inquiry::with(['property', 'tenant.user']);
 
-    if ($user->role === 'owner') {
-        $query->whereHas('property', function ($q) use ($user) {
-            $q->where('owner_id', $user->id);
-        });
+        if ($user->role === 'owner') {
+            $query->whereHas('property', function ($q) use ($user) {
+                $q->where('owner_id', $user->id);
+            });
+        }
+
+        $inquiries = $query->latest()->paginate(10);
+
+        return view('properties.inquiries-index', compact('inquiries'));
     }
-
-    $inquiries = $query->latest()->paginate(10);
-
-    return view('properties.inquiries-index', compact('inquiries'));
-}
     public function index()
     {
         $user = auth()->user();
@@ -229,51 +229,64 @@ class PropertyController extends Controller
             'status' => 'required|in:pending,approved,rejected',
         ]);
 
+        // Check if property/unit is already rented
+        $property = Property::find($inquiry->property_id);
+        if ($request->status === 'approved' && $property) {
+            $occupiedUnit = $property->units()->where('status', 'occupied')->first();
+            if ($occupiedUnit) {
+                return back()->with('warning', 'Property already rented. Cannot approve inquiry.');
+            }
+        }
+
+        // Update inquiry status
         $inquiry->update(['status' => $request->status]);
 
+        // Only handle approved inquiries
         if ($request->status === 'approved') {
-            // ✅ Fix: use tenant_id directly from inquiry, not user_id
-            $tenant   = Tenant::find($inquiry->tenant_id);
-            $property = Property::find($inquiry->property_id);
+            $tenant = Tenant::find($inquiry->tenant_id);
 
-            if ($tenant && $property) {
-                $unit = $property->units()->where('status', 'available')->first();
-
-                if (!$unit) {
-                    $unit = Unit::create([
-                        'property_id'      => $property->id,
-                        'name'             => $property->name . ' - Unit 1',
-                        'floor'            => 1,
-                        'size'             => $property->size,
-                        'unit_measurement' => $property->unit_measurement,
-                        'price'            => $property->price,
-                        'bedrooms'         => $property->bedrooms,
-                        'bathrooms'        => $property->bathrooms,
-                        'status'           => 'available',
-                        'description'      => $property->description,
-                    ]);
-                }
-
-                $tenant->update([
-                    'unit_id' => $unit->id,
-                    'status'  => 'active',
-                ]);
-
-                $unit->update(['status' => 'occupied']);
-
-                Lease::create([
-                    'tenant_id'   => $tenant->id,
-                    'unit_id'     => $unit->id,
-                    'start_date'  => now(),
-                    'end_date'    => now()->addYear(),
-                    'rent_amount' => $unit->price ?? $property->price,
-                    'status'      => 'active',
-                ]);
-
-                return back()->with('success', 'Inquiry approved, lease created and tenant assigned successfully.');
+            if (!$tenant) {
+                return back()->with('warning', 'Tenant profile not found.');
             }
 
-            return back()->with('warning', 'Inquiry approved but tenant profile not found.');
+            // Get available unit or create a new one
+            $unit = $property->units()->where('status', 'available')->first();
+
+            if (!$unit) {
+                $unit = Unit::create([
+                    'property_id'      => $property->id,
+                    'name'             => $property->name . ' - Unit 1',
+                    'floor'            => 1,
+                    'size'             => $property->size,
+                    'unit_measurement' => $property->unit_measurement,
+                    'price'            => $property->price,
+                    'bedrooms'         => $property->bedrooms,
+                    'bathrooms'        => $property->bathrooms,
+                    'status'           => 'available',
+                    'description'      => $property->description,
+                ]);
+            }
+
+            // Assign tenant to the unit and mark unit as occupied
+            $tenant->update([
+                'unit_id' => $unit->id,
+                'status'  => 'active',
+            ]);
+
+            $unit->update(['status' => 'occupied']);
+            $property->update(['status' => 'Rented']);
+
+            // Create lease
+            Lease::create([
+                'tenant_id'   => $tenant->id,
+                'unit_id'     => $unit->id,
+                'start_date'  => now(),
+                'end_date'    => now()->addYear(),
+                'rent_amount' => $unit->price ?? $property->price,
+                'status'      => 'active',
+            ]);
+
+            return back()->with('success', 'Inquiry approved, lease created and tenant assigned successfully.');
         }
 
         return back()->with('success', 'Inquiry status updated.');
